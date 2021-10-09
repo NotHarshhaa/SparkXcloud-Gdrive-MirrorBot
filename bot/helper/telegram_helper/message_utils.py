@@ -73,9 +73,9 @@ def update_all_messages():
     msg, buttons = get_readable_message()
     if msg is None:
         return
-    msg += f"<b>CPU:</b> <code>{psutil.cpu_percent()}%</code>" \
-           f" <b>RAM:</b> <code>{psutil.virtual_memory().percent}%</code>" \
-           f" <b>DISK:</b> <code>{psutil.disk_usage('/').percent}%</code>"
+    msg += f"<b>🖥️CPU:</b> <code>{psutil.cpu_percent()}%</code>" \
+           f" <b>📝RAM:</b> <code>{psutil.virtual_memory().percent}%</code>" \
+           f" <b>💽DISK:</b> <code>{psutil.disk_usage('/').percent}%</code>"
     with download_dict_lock:
         dlspeed_bytes = 0
         uldl_bytes = 0
@@ -93,7 +93,7 @@ def update_all_messages():
                     uldl_bytes += float(speedy.split('M')[0]) * 1048576
         dlspeed = get_readable_file_size(dlspeed_bytes)
         ulspeed = get_readable_file_size(uldl_bytes)
-        msg += f"\n<b>FREE:</b> <code>{free}</code> | <b>UPTIME:</b> <code>{currentTime}</code>\n<b>DL:</b> <code>{dlspeed}/s</code> 🔻 | <b>UL:</b> <code>{ulspeed}/s</code> 🔺\n"
+        msg += f"\n<b>FREE:</b> <code>{free}</code> | <b>UPTIME:</b> <code>{currentTime}</code>\n<b>DL:</b> <code>{dlspeed}/s</code> ⏬ | <b>UL:</b> <code>{ulspeed}/s</code> ⏫\n"
     with status_reply_dict_lock:
         for chat_id in list(status_reply_dict.keys()):
             if status_reply_dict[chat_id] and msg != status_reply_dict[chat_id].text:
@@ -116,9 +116,9 @@ def sendStatusMessage(msg, bot):
     progress, buttons = get_readable_message()
     if progress is None:
         progress, buttons = get_readable_message()
-    progress += f"<b>CPU:</b> <code>{psutil.cpu_percent()}%</code>" \
-           f" <b>RAM:</b> <code>{psutil.virtual_memory().percent}%</code>" \
-           f" <b>DISK:</b> <code>{psutil.disk_usage('/').percent}%</code>"
+    progress += f"<b>💻CPU:</b> <code>{psutil.cpu_percent()}%</code>" \
+           f" <b>📝RAM:</b> <code>{psutil.virtual_memory().percent}%</code>" \
+           f" <b>💽DISK:</b> <code>{psutil.disk_usage('/').percent}%</code>"
     with download_dict_lock:
         dlspeed_bytes = 0
         uldl_bytes = 0
@@ -136,7 +136,7 @@ def sendStatusMessage(msg, bot):
                     uldl_bytes += float(speedy.split('M')[0]) * 1048576
         dlspeed = get_readable_file_size(dlspeed_bytes)
         ulspeed = get_readable_file_size(uldl_bytes)
-        progress += f"\n<b>FREE:</b> <code>{free}</code> | <b>UPTIME:</b> <code>{currentTime}</code>\n<b>DL:</b> <code>{dlspeed}/s</code> 🔻 | <b>UL:</b> <code>{ulspeed}/s</code> 🔺\n"
+        progress += f"\n<b>FREE:</b> <code>{free}</code> | <b>UPTIME:</b> <code>{currentTime}</code>\n<b>DL:</b> <code>{dlspeed}/s</code> ⏬ | <b>UL:</b> <code>{ulspeed}/s</code> ⏫\n"
     with status_reply_dict_lock:
         if msg.message.chat.id in list(status_reply_dict.keys()):
             try:
