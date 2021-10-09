@@ -10,6 +10,46 @@
 
 **SparkXcloud-Gdrive-MirrorBot** is a _multipurpose_ Telegram Bot writen in Python for mirroring files on the Internet to our beloved Google Drive.
 
+## Bot commands
+
+* `/mirror <url>` or `/m <url>`: Download from the given URL and upload it to Google Drive. <url> can be HTTP(S), a BitTorrent magnet, or a HTTP(S) url to a BitTorrent .torrent file. A status message will be shown and updated while downloading.
+* `/tarmirror <url>` or `/mt <url>`: Same as `/mirror`, but archive multiple files into a tar before uploading it.
+* `/status` or `/ms`: Send a status message about all active and queued downloads.
+* `/cancel` or `/cm`: Cancel a particular mirroring task. Only the person who started the task, SUDO_USERS, and chat admins can use this command. It can be used in below two ways:
+
+      1. Send it as a reply to the message that started the download that you want to cancel.
+      2. Use the gid for each download, like `/cancelMirror <gid>` or `/cm <gid>`.
+* `/cancelall` or `/ca`: Cancel all mirroring tasks in all chats if a [SUDO_USERS](#Constants-description) member uses it, or cancel all mirroring tasks for a particular chat if one of that chat's admins use it. No one else can use this command.
+* `/list <filename>` or `/l <filename>`: Send links to downloads with the `filename` substring in the name. In case of too many downloads, only show the most recent few. 
+* `/getfolder` or `/gf`: Send link of drive mirror folder.
+* `/stats`: Send disk information, cpu load of the machine & bot uptime.
+* `/getlink <driveUrl>` or `/gl <driveUrl>`: Send index link of the file.
+* `/clone <driveUrl>` or `/c <diveUrl>`: Clone any shareable drive link. ~~(TODO: Add service account in it so that if 750GB per account limit is over we can switch to service account.)~~
+* `/mirror file` or `/mf`: Forward any torrent file and reply to the forwared message with this command it will start mirroring the torrent.
+* `/tar <driveUrl>` or `/t <driveUrl>`: Create a tar of drive folder and upload. This is not yet 100% perfect but does the work. 
+
+      Workflow:
+      1. It downlaods each and every files(inside the drive folder) one by one using drive download api. As, it downloads one by one so the overall process is slow.
+      2. Creates a tar of the downloaded files.
+      3. Uploads the tar.
+* `/unzipmirror <url>` or `/um <url>`: Unzip the archive and uploads the unzipped folder. Todo: Show extracted percentage & add support to extract from drive url. Idea taken from: [SparkXcloud Group Creater](https://github.com/harshhaareddy)
+
+      Supported filetypes:
+      .zip, .gz, .bz2, .tar, tar.gz, tar.bz2, .tgz, .tbz2
+* `/count <driveUrl>` or `/cnt <driveUrl>`: Obtain informations about a drive folder and send it as a table. Idea taken from: https://github.com/iwestlin/gd-utils/blob/master/count
+* `/authorize` or `/a`: To authorize a chat, only run by SUDO_USERS. As this is stored in a file, so might get reset at every restart(not sure tho). To make it sustain need to use a db like redis which I may implement later.
+* `/unauthorize` or `/ua`: To unauthorize a chat, only run by SUDO_USERS
+* `/restart` or `/r`: Restart Heroku dyno, only run by SUDO_USERS.
+* `/help` or `/h`: Sends a list of bot commands
+
+#### Notes
+
+* **All commands can also be called using dot(.) instead of slash(/). For e.x:** `.mirror <url>` or `.m <url>`
+
+* **All commands except** `list` **can have the bot's username appended to them. See** `COMMANDS_USE_BOT_NAME` **under [constants description](#Constants-description).** This is useful if you have multiple instances of this bot in the same group.
+
+* While creating a Telegram bot in the [pre-installation](#Pre-installation]) section below, you might want to add the above commands to your new bot by using `/setcommand` in BotFather, make sure all the commands are in lower case. This will cause a list of available bot commands to pop up in chats when you type `/`, and you can long press one of them to select it instead of typing out the entire command.
+
 # Features supported:
 <details>
     <summary><b>Click Here For More Details</b></summary>
