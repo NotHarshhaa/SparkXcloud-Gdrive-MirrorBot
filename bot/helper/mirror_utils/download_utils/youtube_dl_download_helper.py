@@ -1,6 +1,6 @@
 from .download_helper import DownloadHelper
 import time
-from youtube_dl import YoutubeDL, DownloadError
+from yt_dlp import YoutubeDL, DownloadError
 from bot import download_dict_lock, download_dict
 from ..status_utils.youtube_dl_download_status import YoutubeDLDownloadStatus
 import logging
@@ -16,7 +16,6 @@ class MyLogger:
 
     def debug(self, msg):
         LOGGER.debug(msg)
-        # Hack to fix changing changing extension
         match = re.search(r'.ffmpeg..Merging formats into..(.*?).$', msg)
         if match and not self.obj.is_playlist:
             newname = match.group(1)
@@ -82,17 +81,13 @@ class YoutubeDLHelper(DownloadHelper):
                     chunk_size = d['downloaded_bytes'] - self.last_downloaded
                     self.last_downloaded = tbyte * progress
                     self.downloaded_bytes += chunk_size
-                    try:
-                        self.progress = (self.downloaded_bytes / self.size) * 100
-                    except ZeroDivisionError:
-                        pass
                 else:
-                    self.size = d['total_bytes']
+                    self.size = tbyte
                     self.downloaded_bytes = d['downloaded_bytes']
-                    try:
-                        self.progress = (self.downloaded_bytes / self.size) * 100
-                    except ZeroDivisionError:
-                        pass
+                try:
+                    self.progress = (self.downloaded_bytes / self.size) * 100
+                except ZeroDivisionError:
+                    pass
 
     def __onDownloadStart(self):
         with download_dict_lock:
@@ -111,11 +106,7 @@ class YoutubeDLHelper(DownloadHelper):
         with YoutubeDL(self.opts) as ydl:
             try:
                 result = ydl.extract_info(link, download=False)
-                if name == "":
-                    name = ydl.prepare_filename(result)
-                else:
-                    name = name
-                # noobway hack for changing extension after converting to mp3
+                name = ydl.prepare_filename(result) if name == "" else name
                 if qual == "audio":
                   name = name.replace(".mp4", ".mp3").replace(".webm", ".mp3")
             except DownloadError as e:
@@ -159,7 +150,7 @@ class YoutubeDLHelper(DownloadHelper):
             self.opts['ignoreerrors'] = True
         self.__onDownloadStart()
         self.extractMetaData(link, qual, name)
-        LOGGER.info(f"Downloading with YT-DL: {link}")
+        LOGGER.info(f"Downloading with YT-DLP: {link}")
         self.__gid = f"{self.vid_id}{self.__listener.uid}"
         if qual == "audio":
           self.opts['format'] = 'bestaudio/best'
