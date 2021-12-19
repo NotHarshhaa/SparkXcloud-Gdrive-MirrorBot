@@ -17,7 +17,7 @@ from bot.helper.telegram_helper.message_utils import *
 from .helper.ext_utils.bot_utils import get_readable_file_size, get_readable_time
 from .helper.telegram_helper.filters import CustomFilters
 from bot.helper.telegram_helper import button_build
-from .modules import authorize, list, cancel_mirror, mirror_status, mirror, clone, watch, shell, eval, torrent_search, delete, speedtest, count, config, updates
+from .modules import authorize, list, cancel_mirror, mirror_status, mirror, clone, watch, shell, eval, torrent_search, delete, speedtest, count, config, updates, usage
 
 
 def stats(update, context):
@@ -58,7 +58,7 @@ Type /{BotCommands.HelpCommand} to get a list of available commands
     reply_markup = InlineKeyboardMarkup(buttons.build_menu(2))
     if CustomFilters.authorized_user(update) or CustomFilters.authorized_chat(update):
         if update.message.chat.type == "private" :
-            sendMessage(f"Hey I'm Alive 🙂\nSince: <code>{uptime}</code>", context.bot, update)
+            sendMessage(f"𝐇𝐞𝐲 𝐈'𝐦 𝐀𝐥𝐢𝐯𝐞 🙂\nSince: <code>{uptime}</code>", context.bot, update)
         else :
             sendMarkup(start_string, context.bot, update, reply_markup)
     else :
@@ -66,7 +66,7 @@ Type /{BotCommands.HelpCommand} to get a list of available commands
 
 
 def restart(update, context):
-    restart_message = sendMessage("😐Restarting, Please wait❗", context.bot, update)
+    restart_message = sendMessage("😐𝐑𝐞𝐬𝐭𝐚𝐫𝐭𝐢𝐧𝐠, 𝐏𝐥𝐞𝐚𝐬𝐞 𝐰𝐚𝐢𝐭❗", context.bot, update)
     # Save restart message object in order to reply to it after restarting
     with open(".restartmsg", "w") as f:
         f.truncate(0)
@@ -160,6 +160,8 @@ def bot_help(update, context):
 
 /{BotCommands.CloneCommand} [drive_url]: Copy file/folder to Google Drive
 
+/{BotCommands.UsageCommand} [heroku dyno info]: Show Heroku Dyno Usage (Only Owner)
+
 /{BotCommands.CountCommand} [drive_url]: Count file/folder of Google Drive Links
 
 /{BotCommands.WatchCommand} [youtube-dl supported link]: Mirror through youtube-dl. Click /{BotCommands.WatchCommand} for more help
@@ -192,6 +194,7 @@ botcmds = [
         (f'{BotCommands.ZipMirrorCommand}','Start mirroring and upload as .zip'),
         (f'{BotCommands.UnzipMirrorCommand}','Extract files'),
         (f'{BotCommands.CloneCommand}','Copy file/folder to Drive'),
+        (f'{BotCommands.UsageCommand}','Show Heroku Dyno Usage'),
         (f'{BotCommands.CountCommand}','Count file/folder of Drive link'),
         (f'{BotCommands.DeleteCommand}','Delete file from Drive'),
         (f'{BotCommands.WatchCommand}','Mirror Youtube-dl support link'),
@@ -218,7 +221,7 @@ def main():
     if os.path.isfile(".restartmsg"):
         with open(".restartmsg") as f:
             chat_id, msg_id = map(int, f)
-        bot.edit_message_text("😎Restarted successfully❗", chat_id, msg_id)
+        bot.edit_message_text("😎𝐑𝐞𝐬𝐭𝐚𝐫𝐭𝐞𝐝 𝐬𝐮𝐜𝐜𝐞𝐬𝐬𝐟𝐮𝐥𝐥𝐲❗", chat_id, msg_id)
         os.remove(".restartmsg")
     bot.set_my_commands(botcmds)
 
