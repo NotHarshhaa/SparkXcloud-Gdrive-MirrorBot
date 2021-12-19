@@ -37,7 +37,7 @@ ariaDlManager = AriaDownloadHelper()
 ariaDlManager.start_listener()
 
 class MirrorListener(listeners.MirrorListeners):
-    def __init__(self, bot, update, pswd, isTar=False, extract=False, isZip=False, isQbit=False):
+    def __init__(self, bot, update, isTar=False, extract=False, isZip=False, isQbit=False, pswd=None):
         super().__init__(bot, update)
         self.isTar = isTar
         self.extract = extract
