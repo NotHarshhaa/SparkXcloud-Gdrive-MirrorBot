@@ -568,7 +568,7 @@ class GoogleDriveHelper:
         chars = ['\\', "'", '"', r'\a', r'\b', r'\f', r'\n', r'\r', r'\t']	
         for char in chars:	
             str = str.replace(char, '\\'+char)	
-        return str	
+        return str.strip()	
 
     def drive_list(self, fileName):
         msg = ""
@@ -700,7 +700,7 @@ class GoogleDriveHelper:
             err = str(err).replace('>', '').replace('<', '')
             LOGGER.error(err)
             if "File not found" in str(err):
-                msg = "File not found."
+                msg = "𝐅𝐢𝐥𝐞 𝐧𝐨𝐭 𝐟𝐨𝐮𝐧𝐝."
             else:
                 msg = f"Error.\n{err}"
             return msg
@@ -751,7 +751,7 @@ class GoogleDriveHelper:
             err = str(err).replace('>', '').replace('<', '')
             LOGGER.error(err)
             if "File not found" in str(err):
-                msg = "File not found."
+                msg = "𝐅𝐢𝐥𝐞 𝐧𝐨𝐭 𝐟𝐨𝐮𝐧𝐝."
             else:
                 msg = f"Error.\n{err}"
             return msg, "", "", ""
