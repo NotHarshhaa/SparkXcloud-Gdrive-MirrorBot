@@ -10,7 +10,7 @@ def shell(update, context):
     message = update.effective_message
     cmd = message.text.split(' ', 1)
     if len(cmd) == 1:
-        message.reply_text('No command to execute was given.')
+        message.reply_text('𝐍𝐨 𝐜𝐨𝐦𝐦𝐚𝐧𝐝 𝐭𝐨 𝐞𝐱𝐞𝐜𝐮𝐭𝐞 𝐰𝐚𝐬 𝐠𝐢𝐯𝐞𝐧.')
         return
     cmd = cmd[1]
     process = subprocess.Popen(

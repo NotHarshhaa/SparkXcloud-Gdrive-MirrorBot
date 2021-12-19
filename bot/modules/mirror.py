@@ -114,7 +114,7 @@ class MirrorListener(listeners.MirrorListeners):
             path = f'{DOWNLOAD_DIR}{self.uid}/{name}'
         up_name = pathlib.PurePath(path).name
         up_path = f'{DOWNLOAD_DIR}{self.uid}/{up_name}'
-        LOGGER.info(f"Upload Name: {up_name}")
+        LOGGER.info(f"𝐔𝐩𝐥𝐨𝐚𝐝 𝐍𝐚𝐦𝐞: {up_name}")
         drive = gdriveTools.GoogleDriveHelper(up_name, self)
         size = fs_utils.get_path_size(up_path)
         upload_status = UploadStatus(drive, size, gid, self)
@@ -139,7 +139,7 @@ class MirrorListener(listeners.MirrorListeners):
             uname = f"@{self.message.from_user.username}"
         else:
             uname = f'<a href="tg://user?id={self.message.from_user.id}">{self.message.from_user.first_name}</a>'
-        msg = f"{uname} your download has been stopped due to: {error}"
+        msg = f"{uname} 𝐲𝐨𝐮𝐫 𝐝𝐨𝐰𝐧𝐥𝐨𝐚𝐝 𝐡𝐚𝐬 𝐛𝐞𝐞𝐧 𝐬𝐭𝐨𝐩𝐩𝐞𝐝 𝐝𝐮𝐞 𝐭𝐨: {error}"
         sendMessage(msg, self.bot, self.update)
         if count == 0:
             self.clean()
@@ -255,7 +255,7 @@ def _mirror(bot, update, isTar=False, extract=False, isZip=False, isQbit=False):
                         f.write(resp.content)
                     link = f"/usr/src/app/{file_name}"
                 else:
-                    sendMessage("ERROR: link got HTTP response:" + resp.status_code, bot, update)
+                    sendMessage("𝐄𝐑𝐑𝐎𝐑: 𝐥𝐢𝐧𝐤 𝐠𝐨𝐭 𝐇𝐓𝐓𝐏 𝐫𝐞𝐬𝐩𝐨𝐧𝐬𝐞:" + resp.status_code, bot, update)
                     return
         if link.startswith("|") or link.startswith("pswd: "):
             link = ''
@@ -327,7 +327,7 @@ def _mirror(bot, update, isTar=False, extract=False, isZip=False, isQbit=False):
 
     if bot_utils.is_gdrive_link(link):
         if not isTar and not extract:
-            sendMessage(f"Use /{BotCommands.CloneCommand} to clone Google Drive file/folder\nUse /{BotCommands.TarMirrorCommand} to make tar of Google Drive folder\nUse /{BotCommands.UnzipMirrorCommand} to extracts archive Google Drive file", bot, update)
+            sendMessage(f"𝐔𝐬𝐞 /{BotCommands.CloneCommand} 𝐭𝐨 𝐜𝐥𝐨𝐧𝐞 𝐆𝐨𝐨𝐠𝐥𝐞 𝐃𝐫𝐢𝐯𝐞 𝐟𝐢𝐥𝐞/𝐟𝐨𝐥𝐝𝐞𝐫\n𝐔𝐬𝐞 /{BotCommands.TarMirrorCommand} 𝐭𝐨 𝐦𝐚𝐤𝐞 𝐭𝐚𝐫 𝐨𝐟 𝐆𝐨𝐨𝐠𝐥𝐞 𝐃𝐫𝐢𝐯𝐞 𝐟𝐨𝐥𝐝𝐞𝐫\n𝐔𝐬𝐞 /{BotCommands.UnzipMirrorCommand} 𝐭𝐨 𝐞𝐱𝐭𝐫𝐚𝐜𝐭𝐬 𝐚𝐫𝐜𝐡𝐢𝐯𝐞 𝐆𝐨𝐨𝐠𝐥𝐞 𝐃𝐫𝐢𝐯𝐞 𝐟𝐢𝐥𝐞", bot, update)
             return
         res, size, name, files = gdriveTools.GoogleDriveHelper().clonehelper(link)
         if res != "":
@@ -336,7 +336,7 @@ def _mirror(bot, update, isTar=False, extract=False, isZip=False, isQbit=False):
         if TAR_UNZIP_LIMIT is not None:
             result = check_limit(size, TAR_UNZIP_LIMIT)
             if result:
-                msg = f'Failed, Tar/Unzip limit is {TAR_UNZIP_LIMIT}.\nYour File/Folder size is {get_readable_file_size(size)}.'
+                msg = f'𝐅𝐚𝐢𝐥𝐞𝐝, 𝐓𝐚𝐫/𝐔𝐧𝐳𝐢𝐩 𝐥𝐢𝐦𝐢𝐭 𝐢𝐬 {TAR_UNZIP_LIMIT}.\n𝐘𝐨𝐮𝐫 𝐅𝐢𝐥𝐞/𝐅𝐨𝐥𝐝𝐞𝐫 𝐬𝐢𝐳𝐞 𝐢𝐬 {get_readable_file_size(size)}.'
                 sendMessage(msg, listener.bot, listener.update)
                 return
         LOGGER.info(f"Download Name : {name}")
@@ -351,9 +351,9 @@ def _mirror(bot, update, isTar=False, extract=False, isZip=False, isQbit=False):
     elif bot_utils.is_mega_link(link):
         link_type = get_mega_link_type(link)
         if link_type == "folder" and BLOCK_MEGA_FOLDER:
-            sendMessage("Mᴇɢᴀ Fᴏʟᴅᴇʀ Aʀᴇ Bʟᴏᴄᴋᴇᴅ! Cᴏᴢ Nᴏᴛ Sᴛᴀʙʟᴇ", bot, update)
+            sendMessage("𝐌𝐞𝐠𝐚 𝐅𝐨𝐥𝐝𝐞𝐫 𝐚𝐫𝐞 𝐛𝐥𝐨𝐜𝐤𝐞𝐝! 𝐂𝐨𝐳 𝐍𝐨𝐭 𝐒𝐭𝐚𝐛𝐥𝐞 & 𝐖𝐢𝐥𝐥 𝐒𝐮𝐩𝐩𝐨𝐫𝐭 𝐭𝐡𝐢𝐬 𝐅𝐞𝐚𝐭𝐮𝐫𝐞 𝐬𝐨𝐨𝐧!", bot, update)
         elif BLOCK_MEGA_LINKS:
-            sendMessage("Mᴇɢᴀ Lɪɴᴋs Aʀᴇ Bʟᴏᴄᴋᴇᴅ! Cᴏᴢ Nᴏᴛ Sᴛᴀʙʟᴇ", bot, update)
+            sendMessage("𝐌𝐞𝐠𝐚 𝐋𝐢𝐧𝐤𝐬 𝐚𝐫𝐞 𝐛𝐥𝐨𝐜𝐤𝐞𝐝! 𝐂𝐨𝐳 𝐍𝐨𝐭 𝐒𝐭𝐚𝐛𝐥𝐞 & 𝐖𝐢𝐥𝐥 𝐒𝐮𝐩𝐩𝐨𝐫𝐭 𝐭𝐡𝐢𝐬 𝐅𝐞𝐚𝐭𝐮𝐫𝐞 𝐬𝐨𝐨𝐧!", bot, update)
         else:
             mega_dl = MegaDownloadHelper()
             mega_dl.add_download(link, f'{DOWNLOAD_DIR}{listener.uid}/', listener)

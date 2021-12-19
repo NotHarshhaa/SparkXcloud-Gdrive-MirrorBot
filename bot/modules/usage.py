@@ -18,7 +18,7 @@ def dyno_usage(update, context):
         app = Heroku.app(HEROKU_APP_NAME)
     else:
         sendMessage(
-            "Please insert your HEROKU_APP_NAME and HEROKU_API_KEY in Vars",
+            "𝐏𝐥𝐞𝐚𝐬𝐞 𝐢𝐧𝐬𝐞𝐫𝐭 𝐲𝐨𝐮𝐫 𝐇𝐄𝐑𝐎𝐊𝐔_𝐀𝐏𝐏_𝐍𝐀𝐌𝐄 𝐚𝐧𝐝 𝐇𝐄𝐑𝐎𝐊𝐔_𝐀𝐏𝐈_𝐊𝐄𝐘 𝐢𝐧 𝐕𝐚𝐫𝐬",
             context.bot,
             update
         )

@@ -16,7 +16,7 @@ def cancel_mirror(update, context):
         gid = args[1]
         dl = getDownloadByGid(gid)
         if not dl:
-            sendMessage(f"GID: <code>{gid}</code> Not Found.", context.bot, update)
+            sendMessage(f"GID: <code>{gid}</code> 𝐍𝐨𝐭 𝐅𝐨𝐮𝐧𝐝.", context.bot, update)
             return
         mirror_message = dl.message
     elif update.message.reply_to_message:
@@ -33,7 +33,7 @@ def cancel_mirror(update, context):
             if BotCommands.MirrorCommand in mirror_message.text or \
                BotCommands.TarMirrorCommand in mirror_message.text or \
                BotCommands.UnzipMirrorCommand in mirror_message.text:
-                msg1 = "Mirror Already Have Been Cancelled"
+                msg1 = "𝐌𝐢𝐫𝐫𝐨𝐫 𝐀𝐥𝐫𝐞𝐚𝐝𝐲 𝐇𝐚𝐯𝐞 𝐁𝐞𝐞𝐧 𝐂𝐚𝐧𝐜𝐞𝐥𝐥𝐞𝐝"
                 sendMessage(msg1, context.bot, update)
                 return
             else:
@@ -43,9 +43,9 @@ def cancel_mirror(update, context):
             sendMessage(msg, context.bot, update)
             return
     if dl.status() == MirrorStatus.STATUS_ARCHIVING:
-        sendMessage("Archival in Progress, You Can't Cancel It.", context.bot, update)
+        sendMessage("𝐀𝐫𝐜𝐡𝐢𝐯𝐚𝐥 𝐢𝐧 𝐏𝐫𝐨𝐠𝐫𝐞𝐬𝐬, 𝐘𝐨𝐮 𝐂𝐚𝐧'𝐭 𝐂𝐚𝐧𝐜𝐞𝐥 𝐈𝐭.", context.bot, update)
     elif dl.status() == MirrorStatus.STATUS_EXTRACTING:
-        sendMessage("Extract in Progress, You Can't Cancel It.", context.bot, update)
+        sendMessage("𝐄𝐱𝐭𝐫𝐚𝐜𝐭 𝐢𝐧 𝐏𝐫𝐨𝐠𝐫𝐞𝐬𝐬, 𝐘𝐨𝐮 𝐂𝐚𝐧'𝐭 𝐂𝐚𝐧𝐜𝐞𝐥 𝐈𝐭.", context.bot, update)
     else:
         dl.download().cancel_download()
         sleep(3)  # incase of any error with ondownloaderror listener
@@ -65,7 +65,7 @@ def cancel_all(update, context):
                 sleep(0.3)
         else:
             break
-    sendMessage(f'{count} Download(s) has been Cancelled!', context.bot, update)
+    sendMessage(f'{count} 𝐃𝐨𝐰𝐧𝐥𝐨𝐚𝐝(𝐬) 𝐡𝐚𝐬 𝐛𝐞𝐞𝐧 𝐂𝐚𝐧𝐜𝐞𝐥𝐥𝐞𝐝!', context.bot, update)
 
 
 
