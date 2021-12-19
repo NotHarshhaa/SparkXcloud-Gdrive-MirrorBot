@@ -53,12 +53,16 @@ class QbDownloadStatus(Status):
 
     def status(self):
         download = self.torrent_info().state
-        if download == "queuedDL":
+        if download in ["queuedDL", "queuedUP"]:
             status = MirrorStatus.STATUS_WAITING
         elif download == "metaDL" or download == "checkingResumeData":
             status = MirrorStatus.STATUS_DOWNLOADING + " (Metadata)"
         elif download == "pausedDL":
             status = MirrorStatus.STATUS_PAUSE
+        elif download in ["checkingUP", "checkingDL"]:
+            status = MirrorStatus.STATUS_CHECKING
+        elif download in ["stalledUP", "uploading", "forcedUP"]:
+            status = MirrorStatus.STATUS_SEEDING    
         else:
             status = MirrorStatus.STATUS_DOWNLOADING
         return status
@@ -77,5 +81,8 @@ class QbDownloadStatus(Status):
 
     def cancel_download(self):
         LOGGER.info(f"Cancelling Download: {self.name()}")
-        self.listener.onDownloadError('Download stopped by user!')
         self.client.torrents_delete(torrent_hashes=self.__hash, delete_files=True)
+        sleep(0.3)
+        if self.status() != MirrorStatus.STATUS_SEEDING:
+            self.listener.onDownloadError('Download stopped by user!')
+            self.client.torrents_delete(torrent_hashes=self.__hash, delete_files=True)
