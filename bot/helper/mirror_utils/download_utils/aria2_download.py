@@ -49,7 +49,8 @@ class AriaDownloadHelper:
                     return
         update_all_messages()
 
-    def __onDownloadComplete(self, api: API, gid):
+    @staticmethod
+    def __onDownloadComplete(api: API, gid):
         dl = getDownloadByGid(gid)
         download = aria2.get_download(gid)
         if download.followed_by_ids:
@@ -92,7 +93,8 @@ class AriaDownloadHelper:
                                       on_download_complete=self.__onDownloadComplete,
                                       timeout=1)
 
-    def add_download(self, link: str, path, listener, filename):
+    @staticmethod
+    def add_download(link: str, path, listener, filename):
         if is_magnet(link):
             download = aria2.add_magnet(link, {'dir': path, 'out': filename})
         else:

@@ -564,7 +564,8 @@ class GoogleDriveHelper:
                                  html_content=content)
         return
 
-    def escapes(self, str):	
+    @staticmethod
+    def escapes(str):	
         chars = ['\\', "'", '"', r'\a', r'\b', r'\f', r'\n', r'\r', r'\t']	
         for char in chars:	
             str = str.replace(char, '\\'+char)	

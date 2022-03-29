@@ -52,7 +52,8 @@ class MirrorListener(listeners.MirrorListeners):
         # We are handling this on our own!
         pass
 
-    def clean(self):
+    @staticmethod
+    def clean():
         try:
             aria2.purge()
             get_client().torrents_delete(torrent_hashes="all", delete_files=True)
