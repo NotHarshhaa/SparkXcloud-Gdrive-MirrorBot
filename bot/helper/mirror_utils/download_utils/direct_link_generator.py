@@ -31,9 +31,9 @@ def direct_link_generator(link: str):
     """ direct links generator """
     if not link:
         raise DirectDownloadLinkException("No links found!")
-    elif 'youtube.com' in link or 'youtu.be' in link:
+    if 'youtube.com' in link or 'youtu.be' in link:
         raise DirectDownloadLinkException(f"Use /{BotCommands.WatchCommand} to mirror Youtube link\nUse /{BotCommands.TarWatchCommand} to make tar of Youtube playlist")
-    elif 'zippyshare.com' in link:
+    if 'zippyshare.com' in link:
         return zippy_share(link)
     elif 'yadi.sk' in link:
         return yandex_disk(link)
@@ -358,8 +358,7 @@ def fichier(link: str) -> str:
       dl_url = soup.find("a", {"class": "ok btn-general btn-orange"})["href"]
       if dl_url is None:
         raise DirectDownloadLinkException("ERROR: Unable to generate Direct Link 1fichier!")
-      else:
-        return dl_url
+      return dl_url
     else:
       if len(soup.find_all("div", {"class": "ct_warn"})) == 2:
         str_2 = soup.find_all("div", {"class": "ct_warn"})[-1]
@@ -367,8 +366,7 @@ def fichier(link: str) -> str:
           numbers = [int(word) for word in str(str_2).split() if word.isdigit()]
           if len(numbers) == 0:
             raise DirectDownloadLinkException("ERROR: 1fichier is on a limit. Please wait a few minutes/hour.")
-          else:
-            raise DirectDownloadLinkException(f"ERROR: 1fichier is on a limit. Please wait {numbers[0]} minute.")
+          raise DirectDownloadLinkException(f"ERROR: 1fichier is on a limit. Please wait {numbers[0]} minute.")
         elif "protect access" in str(str_2).lower():
           raise DirectDownloadLinkException("ERROR: This link requires a password!\n\n<b>This link requires a password!</b>\n- Insert sign <b>::</b> after the link and write the password after the sign.\n\n<b>Example:</b>\n<code>/mirror https://1fichier.com/?smmtd8twfpm66awbqz04::love you</code>\n\n* No spaces between the signs <b>::</b>\n* For the password, you can use a space!")
         else:
@@ -380,8 +378,7 @@ def fichier(link: str) -> str:
           numbers = [int(word) for word in str(str_1).split() if word.isdigit()]
           if len(numbers) == 0:
             raise DirectDownloadLinkException("ERROR: 1fichier is on a limit. Please wait a few minutes/hour.")
-          else:
-            raise DirectDownloadLinkException(f"ERROR: 1fichier is on a limit. Please wait {numbers[0]} minute.")
+          raise DirectDownloadLinkException(f"ERROR: 1fichier is on a limit. Please wait {numbers[0]} minute.")
         elif "bad password" in str(str_3).lower():
           raise DirectDownloadLinkException("ERROR: The password you entered is wrong!")
         else:

@@ -177,8 +177,7 @@ try:
     STATUS_LIMIT = getConfig('STATUS_LIMIT')
     if len(STATUS_LIMIT) == 0:
         raise KeyError
-    else:
-        STATUS_LIMIT = int(getConfig('STATUS_LIMIT'))
+    STATUS_LIMIT = int(getConfig('STATUS_LIMIT'))
 except KeyError:
     STATUS_LIMIT = None
 try:

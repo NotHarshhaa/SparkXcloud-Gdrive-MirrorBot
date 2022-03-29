@@ -317,9 +317,8 @@ class GoogleDriveHelper:
                         if self.sa_count == self.service_account_count:
                             self.is_cancelled = True
                             raise err
-                        else:
-                            self.switchServiceAccount()
-                            return self.copyFile(file_id,dest_id)
+                        self.switchServiceAccount()
+                        return self.copyFile(file_id,dest_id)
                     else:
                         self.is_cancelled = True
                         LOGGER.info(f"Got: {reason}")
