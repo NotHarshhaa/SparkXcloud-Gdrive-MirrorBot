@@ -63,7 +63,7 @@ def cloneNode(update, context):
         if uname is not None:
             cc = f'\n\ncc: {uname}'
             men = f'{uname} '
-        if button == "cancelled" or button == "":
+        if button in ("cancelled", ""):
             sendMessage(men + result, context.bot, update)
         else:
             sendMarkup(result + cc, context.bot, update, button)

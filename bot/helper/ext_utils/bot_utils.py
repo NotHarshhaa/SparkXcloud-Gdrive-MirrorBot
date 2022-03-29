@@ -72,7 +72,7 @@ def getDownloadByGid(gid):
     with download_dict_lock:
         for dl in download_dict.values():
             status = dl.status()
-            if status != MirrorStatus.STATUS_ARCHIVING and status != MirrorStatus.STATUS_EXTRACTING:
+            if status not in (MirrorStatus.STATUS_ARCHIVING, MirrorStatus.STATUS_EXTRACTING):
                 if dl.gid() == gid:
                     return dl
     return None
@@ -81,7 +81,7 @@ def getDownloadByGid(gid):
 def getAllDownload():
     with download_dict_lock:
         for dlDetails in download_dict.values():
-            if dlDetails.status() == MirrorStatus.STATUS_DOWNLOADING or dlDetails.status() == MirrorStatus.STATUS_WAITING:
+            if dlDetails.status() in (MirrorStatus.STATUS_DOWNLOADING, MirrorStatus.STATUS_WAITING):
                 if dlDetails:
                     return dlDetails
     return None
@@ -121,7 +121,7 @@ def get_readable_message():
             if INDEX > COUNT:
                 msg += f"<b>╭─📂Fɪʟᴇɴᴀᴍᴇ :</b> <code>{download.name()}</code>"
                 msg += f"\n<b>├─ℹ️ Sᴛᴀᴛᴜꜱ :</b> <i>{download.status()}</i>"
-                if download.status() != MirrorStatus.STATUS_ARCHIVING and download.status() != MirrorStatus.STATUS_EXTRACTING:
+                if download.status() not in (MirrorStatus.STATUS_ARCHIVING, MirrorStatus.STATUS_EXTRACTING):
                     msg += f"\n<b>├─</b><code>{get_progress_bar_string(download)} {download.progress()}</code>"
                     if download.status() == MirrorStatus.STATUS_CLONING:
                         msg += f"\n<b>├─🚦Cʟᴏɴᴇᴅ :</b> <code>{get_readable_file_size(download.processed_bytes())}</code> of <code>{download.size()}</code>"

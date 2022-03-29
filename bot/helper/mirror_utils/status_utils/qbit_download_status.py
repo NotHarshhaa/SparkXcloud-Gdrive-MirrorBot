@@ -55,7 +55,7 @@ class QbDownloadStatus(Status):
         download = self.torrent_info().state
         if download in ["queuedDL", "queuedUP"]:
             status = MirrorStatus.STATUS_WAITING
-        elif download == "metaDL" or download == "checkingResumeData":
+        elif download in ("metaDL", "checkingResumeData"):
             status = MirrorStatus.STATUS_DOWNLOADING + " (Metadata)"
         elif download == "pausedDL":
             status = MirrorStatus.STATUS_PAUSE

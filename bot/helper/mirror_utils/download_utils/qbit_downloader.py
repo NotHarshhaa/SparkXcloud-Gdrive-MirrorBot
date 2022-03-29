@@ -87,7 +87,7 @@ class qbittorrent:
                                 return False
                             try:
                                 tor_info = tor_info[0]
-                                if tor_info.state == "metaDL" or tor_info.state == "checkingResumeData":
+                                if tor_info.state in ("metaDL", "checkingResumeData"):
                                     time.sleep(0.5)
                                 else:
                                     time.sleep(2)
@@ -214,7 +214,7 @@ def get_hash_magnet(mgt):
     qs = parse_qs(query)
     v = qs.get('xt', None)
     
-    if v == None or v == []:
+    if v in (None, []):
         LOGGER.error('Invalid magnet URI: no "xt" query parameter.')
         return False
         
