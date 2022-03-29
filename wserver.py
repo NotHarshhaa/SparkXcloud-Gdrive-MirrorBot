@@ -617,16 +617,14 @@ async def re_verfiy(paused, resumed, client, torr):
             if str(i.id) in paused:
                 if i.priority == 0:
                     continue
-                else:
-                    verify = False
-                    break
+                verify = False
+                break
 
             if str(i.id) in resumed:
                 if i.priority != 0:
                     continue
-                else:
-                    verify = False
-                    break
+                verify = False
+                break
 
         if not verify:
             LOGGER.error("Reverification Failed, correcting stuff...")
