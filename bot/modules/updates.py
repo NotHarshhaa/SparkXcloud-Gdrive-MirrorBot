@@ -65,7 +65,7 @@ async def update_it(client, message):
         await msg_.edit(f"Bot up-to-date with **{UPSTREAM_BRANCH}**", parse_mode="Markdown")
         return
 
-    if "now" == text:
+    if text == "now":
         await msg_.edit(f"`Bot Updating with` **{UPSTREAM_BRANCH}** `Branch Please Wait...`", parse_mode="Markdown")
         if not HEROKU_URL:
             try:
