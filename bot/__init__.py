@@ -1,5 +1,6 @@
 import logging
 import os
+import sys
 import threading
 import time
 import random
@@ -51,12 +52,12 @@ def mktable():
         LOGGER.info("Table Created!")
     except Error as e:
         LOGGER.error(e)
-        exit(1)
+        sys.exit(1)
 
 try:
     if bool(getConfig('_____REMOVE_THIS_LINE_____')):
         logging.error('The README.md file there to be read! Exiting now!')
-        exit()
+        sys.exit()
 except KeyError:
     pass
 
@@ -133,7 +134,7 @@ try:
     UPSTREAM_BRANCH = getConfig('UPSTREAM_BRANCH')
 except KeyError as e:
     LOGGER.error("One or more env variables missing! Exiting now")
-    exit(1)
+    sys.exit(1)
 try:
     DB_URI = getConfig('DATABASE_URL')
     if len(DB_URI) == 0:
@@ -157,7 +158,7 @@ if DB_URI is not None:
             mktable()
         else:
             LOGGER.error(e)
-            exit(1)
+            sys.exit(1)
     finally:
         cur.close()
         conn.close()
