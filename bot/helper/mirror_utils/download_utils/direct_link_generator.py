@@ -45,6 +45,8 @@ def direct_link_generator(link: str):
         return osdn(link)
     elif 'github.com' in link:
         return github(link)
+    elif "mdisk" in link:
+        return mdisk(link)
     elif 'hxfile.co' in link:
         return hxfile(link)
     elif 'anonfiles.com' in link:
@@ -385,6 +387,32 @@ def fichier(link: str) -> str:
           raise DirectDownloadLinkException("ERROR: Error trying to generate Direct Link from 1fichier!")
       else:
         raise DirectDownloadLinkException("ERROR: Error trying to generate Direct Link from 1fichier!")
+    
+def mdis_k(urlx):
+    scraper = create_scraper(interpreter="nodejs", allow_brotli=False)
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1985.125 Safari/537.36"
+    }
+    apix = f"http://x.egraph.workers.dev/?param={urlx}"
+    try:
+        response = scraper.get(apix, headers=headers)
+        query = response.json()
+    except:
+        raise DirectDownloadLinkException("ERROR: Error while trying to generate Direct Link from MDisk!")
+    return query
+
+def mdisk(url: str) -> str:
+    """MDisk DDL link generator
+    By https://github.com/missemily2022"""
+
+    try:
+        fxl = url.split("/")
+        urlx = fxl[-1]
+        uhh = mdis_k(urlx)
+        text = uhh["download"]
+        return text
+    except:
+        raise DirectDownloadLinkException("ERROR: Error while trying to generate Direct Link from MDisk!")    
 
 
 def solidfiles(url: str) -> str:
