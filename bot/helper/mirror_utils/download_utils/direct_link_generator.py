@@ -22,7 +22,7 @@ import requests, cfscrape
 from bs4 import BeautifulSoup
 from js2py import EvalJs
 from lk21.extractors.bypasser import Bypass
-from base64 import b64decode, standard_b64encode
+from base64 import standard_b64encode
 from bot.helper.telegram_helper.bot_commands import BotCommands
 from bot.helper.ext_utils.exceptions import DirectDownloadLinkException
 
@@ -47,8 +47,6 @@ def direct_link_generator(link: str):
         return github(link)
     elif "mdisk" in link:
         return mdisk(link)
-    elif 'we.tl' in link:
-        return wetransfer(link)
     elif 'hxfile.co' in link:
         return hxfile(link)
     elif 'anonfiles.com' in link:
@@ -332,53 +330,7 @@ def racaty(url: str) -> str:
     dl_url = rsoup.find("a", {"id": "uniqueExpirylink"})["href"].replace(" ", "%20")
     return dl_url
 
-# Wetransfer Pre-Req
-WETRANSFER_API_URL = "https://wetransfer.com/api/v4/transfers"
-WETRANSFER_DOWNLOAD_URL = WETRANSFER_API_URL + "/{transfer_id}/download"
 
-def _prepare_session() -> ression:
-
-    s = ression()
-    r = s.get("https://wetransfer.com/")
-    m = re_search('name="csrf-token" content="([^"]+)"', r.text)
-    s.headers.update(
-        {
-            "x-csrf-token": m.group(1),
-            "x-requested-with": "XMLHttpRequest",
-        }
-    )
-    return s
-
-def wetransfer(url: str) -> str:
-    """WeTransfer.com DL Link Generator
-    By https://github.com/missemily2022"""
-
-    if url.startswith("https://we.tl/"):
-        r = rhead(url, allow_redirects=True)
-        url = r.url
-    recipient_id = None
-    params = urlparse(url).path.split("/")[2:]
-    if len(params) == 2:
-        transfer_id, security_hash = params
-    elif len(params) == 3:
-        transfer_id, recipient_id, security_hash = params
-    else:
-        return None
-    j = {
-        "intent": "entire_transfer",
-        "security_hash": security_hash,
-    }
-    if recipient_id:
-        j["recipient_id"] = recipient_id
-    s = _prepare_session()
-    r = s.post(WETRANSFER_DOWNLOAD_URL.format(transfer_id=transfer_id), json=j)
-    j = r.json()
-    try:
-        if "direct_link" in j:
-            return j["direct_link"]
-    except:
-        raise DirectDownloadLinkException("ERROR: Error while trying to generate Direct Link from WeTransfer!")
-    
 def fichier(link: str) -> str:
     """ 1Fichier direct links generator
     Based on https://github.com/Maujar
