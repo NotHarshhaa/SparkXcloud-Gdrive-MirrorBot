@@ -123,7 +123,7 @@ cd mirrorbot
 - Install requirements
 For Debian based distros
 ```
-sudo apt install python3
+sudo apt install python3 python3-pip
 ```
 Install Docker by following the [official Docker docs](https://docs.docker.com/engine/install/debian/)
 
