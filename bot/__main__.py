@@ -10,7 +10,7 @@ from sys import executable
 from telegram import ParseMode
 from telegram.ext import CommandHandler
 from wserver import start_server_async
-from bot import bot, IMAGE_URL, dispatcher, updater, botStartTime, IGNORE_PENDING_REQUESTS, IS_VPS, SERVER_PORT
+from bot import bot, IMAGE_URL, dispatcher, updater, botStartTime, IGNORE_PENDING_REQUESTS, IS_VPS, SERVER_PORT, botVersion
 from bot.helper.ext_utils import fs_utils
 from bot.helper.telegram_helper.bot_commands import BotCommands
 from bot.helper.telegram_helper.message_utils import *
@@ -33,6 +33,7 @@ def stats(update, context):
     disk = psutil.disk_usage('/').percent
     stats = f'<b>╭──《🌐 Bᴏᴛ Sᴛᴀᴛɪsᴛɪᴄs 🌐》</b>\n' \
             f'<b>│</b>\n' \
+            f'<b>├  🖥️ Vᴇʀsɪᴏɴ : {botVersion}</b>\n' \    
             f'<b>├  ▶ Rᴜɴɴɪɴɢ Sɪɴᴄᴇ ▶ : {currentTime}</b>\n' \
             f'<b>├  💾 Tᴏᴛᴀʟ Dɪsᴋ Sᴘᴀᴄᴇ : {total}</b>\n' \
             f'<b>├  📀 Tᴏᴛᴀʟ Usᴇᴅ Sᴘᴀᴄᴇ : {used}</b>\n' \
