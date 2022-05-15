@@ -240,6 +240,13 @@ try:
 except KeyError:
     TAR_UNZIP_LIMIT = None
 try:
+    TORRENT_TIMEOUT = getConfig('TORRENT_TIMEOUT')
+    if len(TORRENT_TIMEOUT) == 0:
+        raise KeyError
+    TORRENT_TIMEOUT = int(TORRENT_TIMEOUT)
+except:
+    TORRENT_TIMEOUT = None
+try:        
     BUTTON_FOUR_NAME = getConfig('BUTTON_FOUR_NAME')
     BUTTON_FOUR_URL = getConfig('BUTTON_FOUR_URL')
     if 0 in (len(BUTTON_FOUR_NAME), len(BUTTON_FOUR_URL)):
