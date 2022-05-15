@@ -64,33 +64,11 @@ def cancel_all(update, context):
             break
     sendMessage(f'{count} 𝐃𝐨𝐰𝐧𝐥𝐨𝐚𝐝(𝐬) 𝐡𝐚𝐬 𝐛𝐞𝐞𝐧 𝐂𝐚𝐧𝐜𝐞𝐥𝐥𝐞𝐝!', context.bot, update)
     
-def cancell_all_buttons(update, context):
-    buttons = button_build.ButtonMaker()
-    buttons.sbutton("Downloading", "canall down")
-    buttons.sbutton("Uploading", "canall up")
-    if QB_SEED:
-        buttons.sbutton("Seeding", "canall seed")
-    buttons.sbutton("Cloning", "canall clone")
-    buttons.sbutton("All", "canall all")
-    button = InlineKeyboardMarkup(buttons.build_menu(2))
-    sendMarkup('Choose tasks to cancel.', context.bot, update.message, button)
-def cancel_all_update(update, context):
-    query = update.callback_query
-    user_id = query.from_user.id
-    data = query.data
-    data = data.split(" ")
-    if CustomFilters._owner_query(user_id):
-        query.answer()
-        query.message.delete()
-        cancel_all(data[1])
-    else:
-        query.answer(text="𝐘𝐨𝐮 𝐝𝐨𝐧'𝐭 𝐡𝐚𝐯𝐞 𝐩𝐞𝐫𝐦𝐢𝐬𝐬𝐢𝐨𝐧 𝐭𝐨 𝐮𝐬𝐞 𝐭𝐡𝐞𝐬𝐞 𝐛𝐮𝐭𝐭𝐨𝐧𝐬!", show_alert=True)
-
 
 
 cancel_mirror_handler = CommandHandler(BotCommands.CancelMirror, cancel_mirror,
                                     filters=(CustomFilters.authorized_chat | CustomFilters.authorized_user), run_async=True)
-cancel_all_handler = CommandHandler(BotCommands.CancelAllCommand, cancell_all_buttons,
+cancel_all_handler = CommandHandler(BotCommands.CancelAllCommand, cancel_all,
                                     filters=CustomFilters.owner_filter | CustomFilters.sudo_user, run_async=True)
 dispatcher.add_handler(cancel_all_handler)
 dispatcher.add_handler(cancel_mirror_handler)

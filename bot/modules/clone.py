@@ -27,18 +27,11 @@ def cloneNode(update, context):
                 sendMarkup(msg3, context.bot, update, button)
                 return
         if CLONE_LIMIT is not None:
-            LOGGER.info('Checking File/Folder Size...')
-            if size > CLONE_LIMIT * 1024**3:
-                msg2 = f'𝐅𝐚𝐢𝐥𝐞𝐝, 𝐂𝐥𝐨𝐧𝐞 𝐥𝐢𝐦𝐢𝐭 𝐢𝐬 {CLONE_LIMIT}GB.\n𝐘𝐨𝐮𝐫 𝐅𝐢𝐥𝐞/𝐅𝐨𝐥𝐝𝐞𝐫 𝐬𝐢𝐳𝐞 𝐢𝐬 {get_readable_file_size(size)}.'
-                return sendMessage(msg2, bot, message)
-        if multi > 1:
-            sleep(1)
-            nextmsg = type('nextmsg', (object, ), {'chat_id': message.chat_id, 'message_id': message.reply_to_message.message_id + 1})
-            nextmsg = sendMessage(args[0], bot, nextmsg)
-            nextmsg.from_user.id = message.from_user.id
-            multi -= 1
-            sleep(1)
-            Thread(target=_clone, args=(nextmsg, bot, multi)).start()
+            result = check_limit(size, CLONE_LIMIT)
+            if result:
+                msg2 = f'𝐅𝐚𝐢𝐥𝐞𝐝, 𝐂𝐥𝐨𝐧𝐞 𝐥𝐢𝐦𝐢𝐭 𝐢𝐬 {CLONE_LIMIT}.\n𝐘𝐨𝐮𝐫 𝐅𝐢𝐥𝐞/𝐅𝐨𝐥𝐝𝐞𝐫 𝐬𝐢𝐳𝐞 𝐢𝐬 {get_readable_file_size(clonesize)}.'
+                sendMessage(msg2, context.bot, update)
+                return
         if files < 15:
             msg = sendMessage(f"𝐂𝐥𝐨𝐧𝐢𝐧𝐠: <code>{link}</code>", context.bot, update)
             result, button = gd.clone(link)
