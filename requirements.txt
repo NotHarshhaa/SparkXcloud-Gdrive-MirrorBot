@@ -28,3 +28,10 @@ tenacity
 tgCrypto
 urllib3
 yt-dlp
+speedtest-cli
+cloudscrape
+torrentool
+heroku3
+js2py
+aiohttp
+gitpython
