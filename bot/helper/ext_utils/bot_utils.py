@@ -21,15 +21,15 @@ PAGE_NO = 1
 
 
 class MirrorStatus:
-    STATUS_UPLOADING = "Uᴘʟᴏᴀᴅɪɴɢ...📥"
-    STATUS_DOWNLOADING = "Dᴏᴡɴʟᴏᴀᴅɪɴɢ...📥"
-    STATUS_CLONING = "Cʟᴏɴɪɴɢ...♻️"
-    STATUS_WAITING = "Qᴜᴇᴜᴇᴅ...📝"
-    STATUS_FAILED = "Fᴀɪʟᴇᴅ 🚫. Cʟᴇᴀɴɪɴɢ Dᴏᴡɴʟᴏᴀᴅ 🧹..."
-    STATUS_PAUSE = "Pᴀᴜꜱᴇᴅ...⭕️"
-    STATUS_ARCHIVING = "Aʀᴄʜɪᴠɪɴɢ...🔐"
-    STATUS_EXTRACTING = "Exᴛʀᴀᴄᴛɪɴɢ...📂"
-    STATUS_SPLITTING = "Sᴘʟɪᴛᴛɪɴɢ...✂️"
+    STATUS_UPLOADING = "⌈➳ ⭐ ⇅𝚄𝚙𝚕𝚘𝚊𝚍𝚒𝚗𝚐.....ꘉ....📤 ⏫"
+    STATUS_DOWNLOADING = "⌈➳ 🌟 ⇅𝙳𝚘𝚠𝚗𝚕𝚘𝚊𝚍𝚒𝚗𝚐.....ꘉ....📥 ⏬"
+    STATUS_CLONING = "🤶 Cloning..!. ♻️ "
+    STATUS_WAITING = "😡 𝚆𝚊𝚒𝚝𝚒𝚗𝚐...📝 "
+    STATUS_FAILED = "🧐 Failed 🚫.. Cleaning..🌀"
+    STATUS_PAUSE = "🤷‍♀️ Paused...⏸ "
+    STATUS_ARCHIVING = "💝 Archiving...🔐 "
+    STATUS_EXTRACTING = "💔 Extracting...📂"
+    STATUS_SPLITTING = "💞 Splitting...✂️"
     STATUS_CHECKING = "Cʜᴇᴄᴋɪɴɢᴜᴘ...📝"
     STATUS_SEEDING = "Sᴇᴇᴅɪɴɢ...🌧"
 
@@ -122,8 +122,8 @@ def get_readable_message():
                 globals()['COUNT'] -= STATUS_LIMIT
                 globals()['PAGE_NO'] -= 1
         for index, download in enumerate(list(download_dict.values())[COUNT:], start=1):
-            msg += f"<b>📂Fɪʟᴇɴᴀᴍᴇ :</b> <code>{escape(str(download.name()))}</code>"
-            msg += f"\n<b>ℹ️ Sᴛᴀᴛᴜꜱ :</b> <i>{download.status()}</i>"
+            msg += f"<b>⌈➳ 🗃 𝙵𝙸𝙻𝙴𝙽𝙰𝙼𝙴 💌 ⪡」:</b> <code>{escape(str(download.name()))}</code>"
+            msg += f"\n<b>⌈➳ 🔥⇆ 𝚄𝙿𝙳𝙰𝚃𝙴 𝙸𝙽𝙵𝙾 🧐 ⪡」:⌜↬:</b> <i>{download.status()}</i>"
             if download.status() not in [
                 MirrorStatus.STATUS_ARCHIVING,
                 MirrorStatus.STATUS_EXTRACTING,
@@ -134,28 +134,34 @@ def get_readable_message():
                 if download.status() == MirrorStatus.STATUS_CLONING:
                     msg += f"\n<b>🚦Cʟᴏɴᴇᴅ :</b> {get_readable_file_size(download.processed_bytes())} of {download.size()}"
                 elif download.status() == MirrorStatus.STATUS_UPLOADING:
-                    msg += f"\n<b>⚓️ Uᴘʟᴏᴀᴅᴇᴅ :</b> {get_readable_file_size(download.processed_bytes())} of {download.size()}"
+                    msg += f"\n<b>⌈➳ 👰 𝚄𝚙𝚕𝚘𝚊𝚍𝚎𝚍... 💃=> :</b> {get_readable_file_size(download.processed_bytes())} of {download.size()}"
                 else:
-                    msg += f"\n<b>📥 Dᴏᴡɴʟᴏᴀᴅᴇᴅ :</b> {get_readable_file_size(download.processed_bytes())} of {download.size()}"
-                msg += f"\n<b>⚡️ Sᴘᴇᴇᴅ :</b> {download.speed()} | <b>ETA:</b> {download.eta()}"
+                    msg += f"\n<b>⌈➳ 👰 𝙳𝙾𝚆𝙽𝙻𝙾𝙰𝙳 💃 |:</b> {get_readable_file_size(download.processed_bytes())} of {download.size()}"
+                msg += f"\n<b>⌈➳ 📯 𝚂𝙿𝙴𝙴𝙳 ⚡ ⪡」:</b> {download.speed()} | <b>ETA:</b> {download.eta()}"
+                
+                msg += f"\n<b>⌈➳ 🕰 𝙴𝚂𝚃𝙸𝙼𝙰𝚃𝙴𝙳 𝚃𝙸𝙼𝙴 ⏳ : </b> <code>{download.eta()}⌛</code>"
+                msg += f"\n<b>⌈➳ 😎 𝙳𝚘𝚠𝚗𝚕𝚘𝚊𝚍𝚎𝚛 | </b> <b>{download.message.from_user.first_name}</b>\n<b>⌈➳ ⚠️ USER - ID ⪡」👉 </b><code>/warn {download.message.from_user.id}</code>"
+
                 try:
-                    msg += f"\n<b>🌱 Sᴇᴇᴅᴇʀꜱ :</b> {download.aria_download().num_seeders}" \
-                           f" | <b>✳️ Pᴇᴇʀꜱ :</b> {download.aria_download().connections}"
+                    msg += f"\n<b>⌈➳📡 𝚃𝙾𝚁𝚁𝙴𝙽𝚃 𝙸𝙽𝙵𝙾 ⚓️ ⇒\n⌈➳ 𝚂𝙴𝙴𝙳𝙴𝚁𝚂 🌹: </b> <code>{download.aria_download().num_seeders}</code>" \
+                           f" | <b> 𝙿𝙴𝙴𝚁𝚂 🥀 : </b> <code>{download.aria_download().connections}</code>\n<b>⌈➳ 💎 𝙼𝙸𝚁𝚁𝙾𝚁 𝙲𝙻𝙸𝙴𝙽𝚃 |</b> aria2c ◷"           
                 except:
                     pass
                 try:
-                    msg += f"\n<b>🌱 Sᴇᴇᴅᴇʀꜱ :</b> {download.torrent_info().num_seeds}" \
-                           f" | <b>🧲 Lᴇᴇᴄʜᴇʀꜱ :</b> {download.torrent_info().num_leechs}"
+                    msg += f"\n<b>⌈➳ 🤑 𝚂𝙴𝙴𝙳𝙴𝚁𝚂 :</b> {download.torrent_info().num_seeds}" \
+                           f" | <b>🧲 𝙻𝙴𝙴𝙲𝙷𝙴𝚁𝚂:</b> {download.torrent_info().num_leechs}"
                 except:
                     pass
-                msg += f"\n<code>/{BotCommands.CancelMirror} {download.gid()}</code>"
+                msg += f"\n<b>⌈➳ 🤷‍♀️ 𝚃𝙾 𝙲𝙰𝙽𝙲𝙴𝙻 𝙳𝙾𝚆𝙽𝙻𝙾𝙰𝙳 🤦‍♀️ |</b> \n<b>=> 𝚃𝙾𝙺𝙴𝙽 </b> <code>/{BotCommands.CancelMirror} {download.gid()}</code>"
+                msg += f"\n<b> ━━━━━━━━━━━━━━━━━━━━━━━━━━ </b>"
             elif download.status() == MirrorStatus.STATUS_SEEDING:
                 msg += f"\n<b>📦 Sɪᴢᴇ : </b>{download.size()}"
-                msg += f"\n<b>⚡️ Sᴘᴇᴇᴅ: </b>{get_readable_file_size(download.torrent_info().upspeed)}/s"
-                msg += f" | <b>⚓️ Uᴘʟᴏᴀᴅᴇᴅ : </b>{get_readable_file_size(download.torrent_info().uploaded)}"
+                msg += f"\n<b>⌈➳ 📯 𝚂𝙿𝙴𝙴𝙳 ⚡ ⪡」: </b>{get_readable_file_size(download.torrent_info().upspeed)}/s"
+                msg += f" | <b>⌈➳ 👰 𝚄𝚙𝚕𝚘𝚊𝚍𝚎𝚍... 💃=> : </b>{get_readable_file_size(download.torrent_info().uploaded)}"
                 msg += f"\n<b>Ratio: </b>{round(download.torrent_info().ratio, 3)}"
                 msg += f" | <b>⏲️ Eᴛᴀ : </b>{get_readable_time(download.torrent_info().seeding_time)}"
-                msg += f"\n<code>/{BotCommands.CancelMirror} {download.gid()}</code>"
+                msg += f"\n<b>⌈➳ 🤷‍♀️ 𝚃𝙾 𝙲𝙰𝙽𝙲𝙴𝙻 𝙳𝙾𝚆𝙽𝙻𝙾𝙰𝙳 🤦‍♀️ |</b> \n<b>=> 𝚃𝙾𝙺𝙴𝙽 </b> <code>/{BotCommands.CancelMirror} {download.gid()}</code>"
+                msg += f"\n<b> ━━━━━━━━━━━━━━━━━━━━━━━━━━ </b>"
             else:
                 msg += f"\n<b>📦 Sɪᴢᴇ : </b>{download.size()}"
             msg += "\n\n"
@@ -179,13 +185,13 @@ def get_readable_message():
                     upspeed_bytes += float(spd.split('M')[0]) * 1048576
         bmsg += f"\n<b>DL:</b> {get_readable_file_size(dlspeed_bytes)}/s | <b>UL:</b> {get_readable_file_size(upspeed_bytes)}/s"
         if STATUS_LIMIT is not None and tasks > STATUS_LIMIT:
-            msg += f"<b>📑 Pᴀɢᴇ :</b> {PAGE_NO}/{pages} | <b>📝 Tᴀꜱᴋꜱ :</b> {tasks}\n"
+            msg += f"<b>⌈➳ ⏸ 𝙿𝙰𝙶𝙴 :</b> {PAGE_NO}/{pages} | <b>Tasks 🎀 :</b> {tasks}\n"
             buttons = ButtonMaker()
-            buttons.sbutton("⬅️", "status pre")
-            buttons.sbutton("➡️", "status nex")
+            buttons.sbutton("=> ρяєνιουѕ ⏩ ", "pre")
+            buttons.sbutton("=> ղҽxԵ ⏩ ", "nex")
             button = InlineKeyboardMarkup(buttons.build_menu(2))
-            return msg + bmsg, button
-        return msg + bmsg, ""
+            return msg, button
+        return msg, ""
 
 def turn(data):
     try:

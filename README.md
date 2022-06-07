@@ -59,7 +59,7 @@
 - `RSS_DELAY`: Time in seconds for rss refresh interval. Recommended `900` second at least. Default is `900` in sec.
 - `RSS_COMMAND`: Choose command for the desired action.
 - `RSS_CHAT_ID`: Chat ID where rss links will be sent. If using channel then add channel id.
-- `USER_STRING_SESSION`: To send rss links from your telegram account instead of adding bot to channel then adding channel to group to get rss link since bot will not read command from itself or other bot. To generate string session use this command `python3 generate_string_session.py` after mounting repo folder for sure.
+- `USER_SESSION_STRING`: To send rss links from your telegram account instead of adding bot to channel then linking the channel to group to get rss link since bot will not read command from itself or other bot. To generate session string use this command `python3 generate_string_session.py` after mounting repo folder for sure.
   - **RSS NOTE**: `DATABASE_URL` and `RSS_CHAT_ID` is required, otherwise all rss commands will not work. Add the bot in grop for better experience, since if you are using `USER_STRING_SESSION` you need to send a private message to bot after each restart. You can add the bot to a channel and add this channel to group so messages sent by bot to channel will be forwarded to group without using `USER_STRING_SESSION`.
 
 ### Private Files

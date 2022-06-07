@@ -1,4 +1,5 @@
 import shutil, psutil
+from psutil import disk_usage, cpu_percent, swap_memory, cpu_count, virtual_memory, net_io_counters, boot_time
 from signal import signal, SIGINT
 from os import path as ospath, remove as osremove, execl as osexecl
 from subprocess import run as srun, check_output
@@ -9,7 +10,7 @@ from telegram import InlineKeyboardMarkup
 from telegram.ext import CommandHandler
 from telegram import ParseMode
 
-from bot import bot, app, dispatcher, updater, botStartTime, IGNORE_PENDING_REQUESTS, alive, LOGGER, Interval, rss_session, INCOMPLETE_TASK_NOTIFIER, DB_URI, IMAGE_URL
+from bot import bot, app, dispatcher, updater, botStartTime, IGNORE_PENDING_REQUESTS, alive, LOGGER, Interval, rss_session, INCOMPLETE_TASK_NOTIFIER, DB_URI, app, main_loop
 from .helper.ext_utils.fs_utils import start_cleanup, clean_all, exit_clean_up
 from .helper.ext_utils.telegraph_helper import telegraph
 from .helper.ext_utils.bot_utils import get_readable_file_size, get_readable_time
@@ -24,10 +25,6 @@ from .modules import authorize, list, cancel_mirror, mirror_status, mirror, clon
 
 
 def stats(update, context):
-    if ospath.exists('.git'):
-        last_commit = check_output(["git log -1 --date=short --pretty=format:'%cd <b>From</b> %cr'"], shell=True).decode()
-    else:
-        last_commit = 'No UPSTREAM_REPO'
     currentTime = get_readable_time(time.time() - botStartTime)
     total, used, free = shutil.disk_usage('.')
     total = get_readable_file_size(total)
@@ -38,29 +35,31 @@ def stats(update, context):
     cpuUsage = psutil.cpu_percent(interval=0.5)
     memory = psutil.virtual_memory().percent
     disk = psutil.disk_usage('/').percent
-    stats = f'<b>╭──《🌐 Bᴏᴛ Sᴛᴀᴛɪsᴛɪᴄs 🌐》</b>\n' \
-            f'<b>│</b>\n' \
-            f'<b>├  ▶ Rᴜɴɴɪɴɢ Sɪɴᴄᴇ ▶ : {currentTime}</b>\n' \
-            f'<b>├  💾 Tᴏᴛᴀʟ Dɪsᴋ Sᴘᴀᴄᴇ : {total}</b>\n' \
-            f'<b>├  📀 Tᴏᴛᴀʟ Usᴇᴅ Sᴘᴀᴄᴇ : {used}</b>\n' \
-            f'<b>├  💿 Tᴏᴛᴀʟ Fʀᴇᴇ Sᴘᴀᴄᴇ : {free}</b>\n' \
-            f'<b>├  🔼 Tᴏᴛᴀʟ Uᴘʟᴏᴀᴅ : {sent}</b>\n' \
-            f'<b>├  🔽 Tᴏᴛᴀʟ Dᴏᴡɴʟᴏᴀᴅ : {recv}</b>\n' \
-            f'<b>├  🖥️ Cᴘᴜ : {cpuUsage}%</b>\n' \
-            f'<b>├  🎮 Rᴀᴍ : {memory}%</b>\n' \
-            f'<b>├  💽 Dɪsᴋ : {disk}%</b>\n' \
-            f'<b>│</b>\n' \
-            f'<b>╰──《 ☣️ @SparkXcloud ☣️ 》</b>'
-    update.effective_message.reply_photo(IMAGE_URL, stats, parse_mode=ParseMode.HTML)
+    stats = f'<b>⌈➳ 💝 𝙾𝙽𝙻𝙸𝙽𝙴 𝚃𝙸𝙼𝙴 ⌚ : </b> <code>{currentTime}</code>\n' \
+            f'<b>⌈➳ 📇 𝙳𝙸𝚂𝙺 𝚂𝙿𝙰𝙲𝙴 ☠️ : </b> <code>{total}</code>\n' \
+            f'<b>⌈➳ 🗃 𝙳𝙸𝚂𝙺 𝚂𝙿𝙰𝙲𝙴 𝚄𝚂𝙴𝙳 📄 : </b> <code>{used}</code>\n' \
+            f'<b>⌈➳ 💌 𝙳𝙸𝚂𝙺 𝚂𝙿𝙰𝙲𝙴 𝙵𝚁𝙴𝙴  : </b> <code>{free}</code>\n\n' \
+            f'<b>⌈➳ 👻 𝚄𝙿𝙻𝙾𝙰𝙳 𝙳𝙰𝚃𝙰 💞 ... ⇆⏫ :</b> <code>{sent}</code>\n' \
+            f'<b>⌈➳ 💃 𝙳𝙾𝚆𝙽𝙻𝙾𝙰𝙳 𝙳𝙰𝚃𝙰 💔 ... ⇆⏬ :</b> <code>{recv}</code>\n\n' \
+            f'<b>⌈➳ 🖥 𝙲𝙿𝚄 𝚄𝚂𝙰𝙶𝙴↹  : </b> <code>{cpuUsage}% Ϟ</code>\n' \
+            f'<b>⌈➳ 👰 𝚄𝚂𝙰𝙶𝙴 𝙾𝙵 𝙼𝙴𝙼𝙾𝚁𝚈  : </b> <code>{memory}%</code>\n' \
+            f'<b>⌈➳ 👸 𝙳𝙸𝚂𝙺 𝚄𝚂𝙴𝙳 : </b> <code>{disk}% </code>\n' \
+            f'<b>⌈➳ 🧰 𝙾𝚂 𝚂𝙿𝙰𝙲𝙴 : </b> <code>⇉7.2% ♲</code>\n' \
+            f'<b>⌈➳ 📡 𝚂𝙴𝚁𝚅𝙴𝚁 : </b>Global ≼<code> </code><b>🌬 : </b><code>28%</code>\n<b>⌈➳ 💽 𝙳𝙸𝚂𝙺 𝙷𝙾𝚂𝚃 ⊫ : </b><code>SSD⋖</code>\n\n' \
+            f'<b>⌈➳ 🧭 𝚃𝙸𝙼𝙴 𝚉𝙾𝙽𝙴 : </b><code>Asia/Kolkata</code>\n<b>⌈➳ 🇮🇳 𝚃𝙸𝙼𝙴 𝚂𝚃𝙰𝚃𝙴 : </b><code>INDIA-(GMT+:05:30)</code>\n<b>⌈➳ ☁ 𝙳𝚁𝙸𝚅𝙴 𝚂𝙿𝙰𝙲𝙴 => </b><code>495-TB𖥫</code>\n<b>⌈➳ 🛠 𝚃𝚂𝚁 : </b><code>2.53 GB</code><b> 🎄 : </b><code>76.48% ≛</code>\n<b>⌈➳ ✳ ᴘʏᴛʜᴏɴ ᴠᴇʀsɪᴏɴ : </b><code>3.9.7∝</code>\n<b>⌈➳ 🍥 ɪᴘ ᴀᴅᴅʀᴇss 𖣃 </b><code>Encrypted</code>\n\n<b>⌈➳ π- Bot Update Info..! </b>'"<a href='https://telegra.ph/file/9d9703906724616cf42ef.jpg'>😎</a>"
+            
+            
+    sendMessage(stats, context.bot, update)
 
 
 def start(update, context):
     buttons = ButtonMaker()
-    buttons.buildbutton("Repo", "https://github.com/Spark-X-Cloud/SparkXcloud-Gdrive-MirrorBot")
-    buttons.buildbutton("Report Group", "https://t.me/+R2czcPeMkUc1NDI1")
+    buttons.buildbutton("🔥 Repo", "https://github.com/Spark-X-Cloud/SparkXcloud-Gdrive-MirrorBot")
+    buttons.buildbutton("😎 Channel", "https://t.me/+R2czcPeMkUc1NDI1")
     reply_markup = InlineKeyboardMarkup(buttons.build_menu(2))
     if CustomFilters.authorized_user(update) or CustomFilters.authorized_chat(update):
         start_string = f'''
+☠️ https://t.me/SparkXcloud        
 This bot can mirror all your links to Google Drive!
 Type /{BotCommands.HelpCommand} to get a list of available commands
 '''
@@ -69,7 +68,7 @@ Type /{BotCommands.HelpCommand} to get a list of available commands
         sendMarkup(f"Oops! not an Authorized user.\nPlease deploy your own <b>SparkXcloud-Gdrive-MirrorBot</b>.", context.bot, update, reply_markup)
 
 def restart(update, context):
-    restart_message = sendMessage("Restarting...", context.bot, update.message)
+    restart_message = sendMessage("Restarting, Please wait!..👻👻", context.bot, update.message)
     if Interval:
         Interval[0].cancel()
     alive.kill()
@@ -84,9 +83,9 @@ def restart(update, context):
 
 def ping(update, context):
     start_time = int(round(time() * 1000))
-    reply = sendMessage("⛔Starting Ping", context.bot, update.message)
+    reply = sendMessage("Starting_Ping ☠️", context.bot, update.message)
     end_time = int(round(time() * 1000))
-    editMessage(f'{end_time - start_time} ms', reply)
+    editMessage(f'{end_time - start_time} 𝙿𝙸𝙽𝙶 𝚄𝙿𝙳𝙰𝚃𝙴 𝙸𝚗𝚏𝚘 => 𝙼𝚂 🔥', reply)
 
 
 def log(update, context):
@@ -181,7 +180,7 @@ help_string = f'''
 
 def bot_help(update, context):
     button = ButtonMaker()
-    button.buildbutton("Other Commands", f"https://telegra.ph/{help}")
+    button.buildbutton("📝 ᴄᴍᴅ-ɪɴғᴏ ", f"https://telegra.ph/{help}")
     reply_markup = InlineKeyboardMarkup(button.build_menu(1))
     sendMarkup(help_string, context.bot, update.message, reply_markup)
 
@@ -274,9 +273,8 @@ def main():
     updater.start_polling(drop_pending_updates=IGNORE_PENDING_REQUESTS)
     LOGGER.info("💥𝐁𝐨𝐭 𝐒𝐭𝐚𝐫𝐭𝐞𝐝❗")
     signal(SIGINT, exit_clean_up)
-    if rss_session is not None:
-        rss_session.start()
 
-app.start()
 main()
-idle()
+app.start()
+
+main_loop.run_forever()

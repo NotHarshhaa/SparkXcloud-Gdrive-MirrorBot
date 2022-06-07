@@ -331,28 +331,21 @@ def _mirror(bot, message, isZip=False, extract=False, isQbit=False, isLeech=Fals
                 tag = f"@{reply_to.from_user.username}"
             else:
                 tag = reply_to.from_user.mention_html(reply_to.from_user.first_name)
-
-        if (
-            not is_url(link)
-            and not is_magnet(link)
-            or len(link) == 0
-        ):
-
+        if not is_url(link) and not is_magnet(link) or len(link) == 0:
             if file is None:
                 reply_text = reply_to.text
                 if is_url(reply_text) or is_magnet(reply_text):
                     link = reply_text.strip()
             elif file.mime_type != "application/x-bittorrent" and not isQbit:
                 listener = MirrorListener(bot, message, isZip, extract, isQbit, isLeech, pswd, tag)
-                tg_downloader = TelegramDownloadHelper(listener)
-                tg_downloader.add_download(message, f'{DOWNLOAD_DIR}{listener.uid}/', name)
+                Thread(target=TelegramDownloadHelper(listener).add_download, args=(message, f'{DOWNLOAD_DIR}{listener.uid}/', name)).start()
                 if multi > 1:
-                    sleep(3)
+                    sleep(4)
                     nextmsg = type('nextmsg', (object, ), {'chat_id': message.chat_id, 'message_id': message.reply_to_message.message_id + 1})
                     nextmsg = sendMessage(message_args[0], bot, nextmsg)
                     nextmsg.from_user.id = message.from_user.id
                     multi -= 1
-                    sleep(3)
+                    sleep(4)
                     Thread(target=_mirror, args=(bot, nextmsg, isZip, extract, isQbit, isLeech, pswd, multi)).start()
                 return
             else:
