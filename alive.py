@@ -1,7 +1,3 @@
-# Implement By - @anasty17 (https://github.com/Spark-X-Cloud/SparkXcloud-Gdrive-MirrorBot/commit/0bfba523f095ab1dccad431d72561e0e002e7a59)
-# (c) https://github.com/Spark-X-Cloud/SparkXcloud-Gdrive-MirrorBot
-# All rights reserved
-
 from time import sleep
 from requests import get as rget
 from os import environ
