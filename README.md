@@ -1,12 +1,10 @@
-[![SparkXcloud](https://telegra.ph/file/9667da1502f4dde2b209e.jpg)](https://youtu.be/Pk_TthHfLeE)
+![SparkXcloud](https://github.com/harshhaareddy/SparkXcloud-Gdrive-MirrorBot/raw/master/assets/banner.png)
 
 # SparkXcloud-Gdrive-MirrorBot/LeechBot v2.0
-![GitHub Repo stars](https://img.shields.io/github/stars/Spark-X-Cloud/SparkXcloud-Gdrive-MirrorBot?color=blue&style=flat)
-![GitHub forks](https://img.shields.io/github/forks/Spark-X-Cloud/SparkXcloud-Gdrive-MirrorBot?color=green&style=flat)
-![GitHub contributors](https://img.shields.io/github/contributors/Spark-X-Cloud/SparkXcloud-Gdrive-MirrorBot?style=flat)
-![GitHub watchers](https://img.shields.io/github/watchers/Spark-X-Cloud/SparkXcloud-Gdrive-MirrorBot)
-![Docker Pulls](https://img.shields.io/docker/pulls/breakdowns/mega-sdk-python?label=Docker%20Pull)
-[![Channel](https://img.shields.io/badge/Join%20Channel-!-red)](https://t.me/SparkXcloud)
+[![Sponsor](https://img.shields.io/badge/sponsor-30363D?style=for-the-badge&logo=GitHub-Sponsors&logoColor=#white)](https://ko-fi.com/harshhaareddy)
+[![GitHub watchers](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://img.shields.io/github/watchers/Spark-X-Cloud/SparkXcloud-Gdrive-MirrorBot)
+[![Docker Pulls](https://img.shields.io/badge/Docker-ff1709?style=for-the-badge&logo=docker&logoColor=white)](https://hub.docker.com/r/harshhaareddy/mega-sdk-python)
+[![Channel](https://img.shields.io/badge/Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white)](https://t.me/SparkXcloud)
 
 **SparkXcloud-Gdrive-MirrorBot** is a _multipurpose_ Telegram Bot writen in Python for mirroring files on the Internet to our beloved Google Drive.
 

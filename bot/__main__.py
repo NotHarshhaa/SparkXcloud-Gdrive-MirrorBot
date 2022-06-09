@@ -1,16 +1,16 @@
 import shutil, psutil
-from psutil import disk_usage, cpu_percent, swap_memory, cpu_count, virtual_memory, net_io_counters, boot_time
+import time
 from signal import signal, SIGINT
 from os import path as ospath, remove as osremove, execl as osexecl
 from subprocess import run as srun, check_output
-from time import time
+from datetime import datetime
 from pyrogram import idle
 from sys import executable
 from telegram import InlineKeyboardMarkup
 from telegram.ext import CommandHandler
 from telegram import ParseMode
 
-from bot import bot, app, dispatcher, updater, botStartTime, IGNORE_PENDING_REQUESTS, alive, LOGGER, Interval, rss_session, INCOMPLETE_TASK_NOTIFIER, DB_URI, app, main_loop
+from bot import bot, app, dispatcher, updater, botStartTime, IGNORE_PENDING_REQUESTS, LOGGER, Interval, rss_session, INCOMPLETE_TASK_NOTIFIER, DB_URI, app, main_loop
 from .helper.ext_utils.fs_utils import start_cleanup, clean_all, exit_clean_up
 from .helper.ext_utils.telegraph_helper import telegraph
 from .helper.ext_utils.bot_utils import get_readable_file_size, get_readable_time

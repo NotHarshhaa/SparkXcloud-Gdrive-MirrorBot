@@ -1,7 +1,7 @@
 from os import remove as osremove, path as ospath, mkdir, walk, listdir, rmdir, makedirs
 from sys import exit as sysexit
 from json import loads as jsnloads
-from shutil import rmtree, disk_usage
+from shutil import rmtree
 from PIL import Image
 from magic import Magic
 from subprocess import run as srun, check_output
@@ -9,7 +9,7 @@ from time import time
 from math import ceil
 
 from .exceptions import NotSupportedExtractionArchive
-from bot import aria2, LOGGER, DOWNLOAD_DIR, get_client, TG_SPLIT_SIZE, EQUAL_SPLITS, STORAGE_THRESHOLD
+from bot import aria2, LOGGER, DOWNLOAD_DIR, get_client, TG_SPLIT_SIZE, EQUAL_SPLITS
 
 VIDEO_SUFFIXES = ("M4V", "MP4", "MOV", "FLV", "WMV", "3GP", "MPG", "WEBM", "MKV", "AVI")
 
@@ -67,20 +67,6 @@ def get_path_size(path: str):
             abs_path = ospath.join(root, f)
             total_size += ospath.getsize(abs_path)
     return total_size
-
-def check_storage_threshold(size: int, arch=False, alloc=False):
-    if not alloc:
-        if not arch:
-            if disk_usage(DOWNLOAD_DIR).free - size < STORAGE_THRESHOLD * 1024**3:
-                return False
-        elif disk_usage(DOWNLOAD_DIR).free - (size * 2) < STORAGE_THRESHOLD * 1024**3:
-            return False
-    elif not arch:
-        if disk_usage(DOWNLOAD_DIR).free < STORAGE_THRESHOLD * 1024**3:
-            return False
-    elif disk_usage(DOWNLOAD_DIR).free - size < STORAGE_THRESHOLD * 1024**3:
-        return False
-    return True
 
 def get_base_name(orig_path: str):
     if orig_path.endswith(".tar.bz2"):
@@ -223,18 +209,21 @@ def get_media_info(path):
     except Exception as e:
         LOGGER.error(f"get_media_info: {e}")
         return 0, None, None
-    try:
-        duration = round(float(fields['duration']))
-    except:
-        duration = 0
-    try:
-        artist = str(fields['tags']['artist'])
-    except:
-        artist = None
-    try:
-        title = str(fields['tags']['title'])
-    except:
+
+    duration = round(float(fields.get('duration', 0)))
+
+    fields = fields.get('tags')
+    if fields is not None:
+        artist = fields.get('artist')
+        if artist is None:
+            artist = fields.get('ARTIST')
+        title = fields.get('title')
+        if title is None:
+            title = fields.get('TITLE')
+    else:
         title = None
+        artist = None
+
     return duration, artist, title
 
 def get_video_resolution(path):
