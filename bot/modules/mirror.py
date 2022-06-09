@@ -195,12 +195,12 @@ class MirrorListener:
     def onUploadComplete(self, link: str, size, files, folders, typ, name: str):
         if not self.isPrivate and INCOMPLETE_TASK_NOTIFIER and DB_URI is not None:
             DbManger().rm_complete_task(self.message.link)
-        msg = f"<b>╭─📂Fɪʟᴇɴᴀᴍᴇ : </b><code>{escape(name)}</code>\n\n<b>Size: </b>{size}"
+        msg = f"<b>⌈➳ 💌 𝙵𝙸𝙻𝙴𝙽𝙰𝙼𝙴 ♻ : </b><code>{escape(name)}</code>\n\n<b>Size: </b>{size}"
         if self.isLeech:
-            msg += f'\n<b>├─📁 Fɪʟᴇꜱ : </b>{folders}'
+            msg += f'\n<b>⌈➳ 🗂 𝚃𝙾𝚃𝙰𝙻 𝙵𝙸𝙻𝙴𝚂 => : </b>{folders}'
             if typ != 0:
-                msg += f'\n<b>├─ 🎲 Cᴏʀʀᴜᴘᴛᴇᴅ Fɪʟᴇs : </b>{typ}'
-            msg += f'\n<b>╰─⚙️ ᴄᴄ : </b>{self.tag}\n\n'
+                msg += f'\n<b>⌈➳ 🎲 𝙲𝙾𝚁𝚁𝚄𝙿𝚃𝙴𝙳 𝙵𝙸𝙻𝙴𝚂 : </b>{typ}'
+            msg += f'\n<b>⌈➳ ⚙️ 𝙲𝙲 : </b>{self.tag}\n\n'
             if not files:
                 sendMessage(msg, self.bot, self.message)
             else:
@@ -214,14 +214,14 @@ class MirrorListener:
                 if fmsg != '':
                     sendMessage(msg + fmsg, self.bot, self.message)
         else:
-            msg += f'\n\n<b>├─⚙️ Tʏᴘᴇ : </b>{typ}'
+            msg += f'\n\n<b>⌈➳ ♻ 𝚃𝚈𝙿𝙴 : </b>{typ}'
             if ospath.isdir(f'{DOWNLOAD_DIR}{self.uid}/{name}'):
-                msg += f'\n<b>├─📚 Sᴜʙꜰᴏʟᴅᴇʀꜱ : </b>{folders}'
-                msg += f'\n<b>├─📁 Fɪʟᴇꜱ : </b>{files}'
-            msg += f'\n\n<b>╰─⚙️ ᴄᴄ : </b>{self.tag}'
+                msg += f'\n<b>⌈➳ 📚 𝚂𝚄𝙱-𝙵𝙾𝙻𝙳𝙴𝚁𝚂 : </b>{folders}'
+                msg += f'\n<b>⌈➳ 📁 𝙵𝙸𝙻𝙴𝚂 : </b>{files}'
+            msg += f'\n\n<b>⌈➳ ⚙️ 𝙲𝙲 : </b>{self.tag}'
             buttons = ButtonMaker()
             link = short_url(link)
-            buttons.buildbutton("☁️ Dʀɪᴠᴇ Lɪɴᴋ ☁️", link)
+            buttons.buildbutton("🌩 𝙳𝚁𝙸𝚅𝙴-𝙻𝙸𝙽𝙺 🌩", link)
             LOGGER.info(f'Done Uploading {name}')
             if INDEX_URL is not None:
                 url_path = rutils.quote(f'{name}')
@@ -229,14 +229,14 @@ class MirrorListener:
                 if ospath.isdir(f'{DOWNLOAD_DIR}/{self.uid}/{name}'):
                     share_url += '/'
                     share_url = short_url(share_url)
-                    buttons.buildbutton("💡 Iɴᴅᴇx Lɪɴᴋ 💡", share_url)
+                    buttons.buildbutton("⚡ 𝙸𝙽𝙳𝙴𝚇-𝙻𝙸𝙽𝙺 🔰", share_url)
                 else:
                     share_url = short_url(share_url)
-                    buttons.buildbutton("💡 Iɴᴅᴇx Lɪɴᴋ 💡", share_url)
+                    buttons.buildbutton("⚡ 𝙸𝙽𝙳𝙴𝚇-𝙻𝙸𝙽𝙺 🔰", share_url)
                     if VIEW_LINK:
                         share_urls = f'{INDEX_URL}/{url_path}?a=view'
                         share_urls = short_url(share_urls)
-                        buttons.buildbutton("📖 Vɪᴇᴡ Lɪɴᴋ 📖", share_urls)
+                        buttons.buildbutton("✅ 𝚅𝙸𝙴𝚆-𝙻𝙸𝙽𝙺 💝", share_urls)
             if BUTTON_FOUR_NAME is not None and BUTTON_FOUR_URL is not None:
                 buttons.buildbutton(f"{BUTTON_FOUR_NAME}", f"{BUTTON_FOUR_URL}")
             if BUTTON_FIVE_NAME is not None and BUTTON_FIVE_URL is not None:

@@ -1,9 +1,9 @@
 import shutil, psutil
-from psutil import disk_usage, cpu_percent, swap_memory, cpu_count, virtual_memory, net_io_counters, boot_time
+import time
 from signal import signal, SIGINT
 from os import path as ospath, remove as osremove, execl as osexecl
 from subprocess import run as srun, check_output
-from time import time
+from datetime import datetime
 from pyrogram import idle
 from sys import executable
 from telegram import InlineKeyboardMarkup
