@@ -1,9 +1,9 @@
-import shutil, psutil
-import time
 from signal import signal, SIGINT
 from os import path as ospath, remove as osremove, execl as osexecl
 from subprocess import run as srun, check_output
+from psutil import disk_usage, cpu_percent, swap_memory, cpu_count, virtual_memory, net_io_counters, boot_time
 from datetime import datetime
+from time import time
 from pyrogram import idle
 from sys import executable
 from telegram import InlineKeyboardMarkup
@@ -25,31 +25,46 @@ from .modules import authorize, list, cancel_mirror, mirror_status, mirror, clon
 
 
 def stats(update, context):
-    currentTime = get_readable_time(time.time() - botStartTime)
-    total, used, free = shutil.disk_usage('.')
+    if ospath.exists('.git'):
+        last_commit = check_output(["git log -1 --date=short --pretty=format:'%cd <b>From</b> %cr'"], shell=True).decode()
+    else:
+        last_commit = 'No UPSTREAM_REPO'
+    currentTime = get_readable_time(time() - botStartTime)
+    osUptime = get_readable_time(time() - boot_time())
+    total, used, free, disk= disk_usage('/')
     total = get_readable_file_size(total)
     used = get_readable_file_size(used)
     free = get_readable_file_size(free)
-    sent = get_readable_file_size(psutil.net_io_counters().bytes_sent)
-    recv = get_readable_file_size(psutil.net_io_counters().bytes_recv)
-    cpuUsage = psutil.cpu_percent(interval=0.5)
-    memory = psutil.virtual_memory().percent
-    disk = psutil.disk_usage('/').percent
-    stats = f'<b>⌈➳ 💝 𝙾𝙽𝙻𝙸𝙽𝙴 𝚃𝙸𝙼𝙴 ⌚ : </b> <code>{currentTime}</code>\n' \
-            f'<b>⌈➳ 📇 𝙳𝙸𝚂𝙺 𝚂𝙿𝙰𝙲𝙴 ☠️ : </b> <code>{total}</code>\n' \
-            f'<b>⌈➳ 🗃 𝙳𝙸𝚂𝙺 𝚂𝙿𝙰𝙲𝙴 𝚄𝚂𝙴𝙳 📄 : </b> <code>{used}</code>\n' \
-            f'<b>⌈➳ 💌 𝙳𝙸𝚂𝙺 𝚂𝙿𝙰𝙲𝙴 𝙵𝚁𝙴𝙴  : </b> <code>{free}</code>\n\n' \
-            f'<b>⌈➳ 👻 𝚄𝙿𝙻𝙾𝙰𝙳 𝙳𝙰𝚃𝙰 💞 ... ⇆⏫ :</b> <code>{sent}</code>\n' \
-            f'<b>⌈➳ 💃 𝙳𝙾𝚆𝙽𝙻𝙾𝙰𝙳 𝙳𝙰𝚃𝙰 💔 ... ⇆⏬ :</b> <code>{recv}</code>\n\n' \
-            f'<b>⌈➳ 🖥 𝙲𝙿𝚄 𝚄𝚂𝙰𝙶𝙴↹  : </b> <code>{cpuUsage}% Ϟ</code>\n' \
-            f'<b>⌈➳ 👰 𝚄𝚂𝙰𝙶𝙴 𝙾𝙵 𝙼𝙴𝙼𝙾𝚁𝚈  : </b> <code>{memory}%</code>\n' \
-            f'<b>⌈➳ 👸 𝙳𝙸𝚂𝙺 𝚄𝚂𝙴𝙳 : </b> <code>{disk}% </code>\n' \
-            f'<b>⌈➳ 🧰 𝙾𝚂 𝚂𝙿𝙰𝙲𝙴 : </b> <code>⇉7.2% ♲</code>\n' \
-            f'<b>⌈➳ 📡 𝚂𝙴𝚁𝚅𝙴𝚁 : </b>Global ≼<code> </code><b>🌬 : </b><code>28%</code>\n<b>⌈➳ 💽 𝙳𝙸𝚂𝙺 𝙷𝙾𝚂𝚃 ⊫ : </b><code>SSD⋖</code>\n\n' \
-            f'<b>⌈➳ 🧭 𝚃𝙸𝙼𝙴 𝚉𝙾𝙽𝙴 : </b><code>Asia/Kolkata</code>\n<b>⌈➳ 🇮🇳 𝚃𝙸𝙼𝙴 𝚂𝚃𝙰𝚃𝙴 : </b><code>INDIA-(GMT+:05:30)</code>\n<b>⌈➳ ☁ 𝙳𝚁𝙸𝚅𝙴 𝚂𝙿𝙰𝙲𝙴 => </b><code>495-TB𖥫</code>\n<b>⌈➳ 🛠 𝚃𝚂𝚁 : </b><code>2.53 GB</code><b> 🎄 : </b><code>76.48% ≛</code>\n<b>⌈➳ ✳ ᴘʏᴛʜᴏɴ ᴠᴇʀsɪᴏɴ : </b><code>3.9.7∝</code>\n<b>⌈➳ 🍥 ɪᴘ ᴀᴅᴅʀᴇss 𖣃 </b><code>Encrypted</code>\n\n<b>⌈➳ π- Bot Update Info..! </b>'"<a href='https://telegra.ph/file/9d9703906724616cf42ef.jpg'>😎</a>"
-            
-            
-    sendMessage(stats, context.bot, update)
+    sent = get_readable_file_size(net_io_counters().bytes_sent)
+    recv = get_readable_file_size(net_io_counters().bytes_recv)
+    cpuUsage = cpu_percent(interval=0.5)
+    p_core = cpu_count(logical=False)
+    t_core = cpu_count(logical=True)
+    swap = swap_memory()
+    swap_p = swap.percent
+    swap_t = get_readable_file_size(swap.total)
+    memory = virtual_memory()
+    mem_p = memory.percent
+    mem_t = get_readable_file_size(memory.total)
+    mem_a = get_readable_file_size(memory.available)
+    mem_u = get_readable_file_size(memory.used)
+    stats = f'<b>⌈➳ 🛠 𝙲𝙾𝙼𝙼𝙸𝚃 𝙳𝙰𝚃𝙴🎄 :</b> {last_commit}\n\n'\
+            f'<b>⌈➳ 💝 𝙾𝙽𝙻𝙸𝙽𝙴 𝚃𝙸𝙼𝙴 ⌚ : </b> {currentTime}\n'\
+            f'<b>⌈➳ ☠️ 𝙾𝚂 𝚄𝙿𝚃𝙸𝙼𝙴 🧰 :</b> {osUptime}\n\n'\
+            f'<b>⌈➳ 📇 𝙳𝙸𝚂𝙺 𝚂𝙿𝙰𝙲𝙴 ☠️ :</b> {total}\n'\
+            f'<b>⌈➳ 🗃 𝙳𝙸𝚂𝙺 𝚂𝙿𝙰𝙲𝙴 𝚄𝚂𝙴𝙳 :</b> {used} | <b>⌈➳ 💌 𝙳𝙸𝚂𝙺 𝚂𝙿𝙰𝙲𝙴 𝙵𝚁𝙴𝙴 :</b> {free}\n\n'\
+            f'<b>⌈➳ 𝚄𝙿𝙻𝙾𝙰𝙳 𝙳𝙰𝚃𝙰 💞 ... ⇆⏫ :</b> {sent}\n'\
+            f'<b>⌈➳ 💃 𝙳𝙾𝚆𝙽𝙻𝙾𝙰𝙳 𝙳𝙰𝚃𝙰 💔 ... ⇆⏬ :</b> {recv}\n\n'\
+            f'<b>⌈➳ 🖥 𝙲𝙿𝚄 𝚄𝚂𝙰𝙶𝙴↹ :</b> {cpuUsage}%\n'\
+            f'<b>⌈➳ 🧭 𝚁𝙰𝙼 :</b> {mem_p}%\n'\
+            f'<b>⌈➳ 👸 𝙳𝙸𝚂𝙺 𝚄𝚂𝙴𝙳 :</b> {disk}%\n\n'\
+            f'<b>⌈➳ 💽 𝙿𝙷𝚈𝚂𝙸𝙲𝙰𝙻 𝙲𝙾𝚁𝙴𝚂 ⊫ :</b> {p_core}\n'\
+            f'<b>⌈➳ 🍥 𝚃𝙾𝚃𝙰𝙻 𝙲𝙾𝚁𝙴𝚂 𖣃 :</b> {t_core}\n\n'\
+            f'<b>⌈➳ ✳ 𝚂𝚆𝙰𝙿 :</b> {swap_t} | <b>⌈➳ 👸 𝙳𝙸𝚂𝙺 :</b> {swap_p}%\n'\
+            f'<b>⌈➳ ☁ 𝚃𝙾𝚃𝙰𝙻 𝙾𝙵 𝙼𝙴𝙼𝙾𝚁𝚈 => :</b> {mem_t}\n'\
+            f'<b>⌈➳ 💃 𝙵𝚁𝙴𝙴 𝙾𝙵 𝙼𝙴𝙼𝙾𝚁𝚈 :</b> {mem_a}\n'\
+            f'<b>⌈➳ 👰 𝚄𝚂𝙰𝙶𝙴 𝙾𝙵 𝙼𝙴𝙼𝙾𝚁𝚈 :</b> {mem_u}\n'
+    sendMessage(stats, context.bot, update.message)
 
 
 def start(update, context):
@@ -71,7 +86,6 @@ def restart(update, context):
     restart_message = sendMessage("Restarting, Please wait!..👻👻", context.bot, update.message)
     if Interval:
         Interval[0].cancel()
-    alive.kill()
     clean_all()
     srun(["pkill", "-f", "gunicorn|aria2c|qbittorrent-nox"])
     srun(["python3", "update.py"])
