@@ -1,18 +1,21 @@
 # -*- coding: utf-8 -*-
 # (c) YashDK [yash-dk@github]
+# Redesigned By - @bipuldey19 (https://github.com/SlamDevs/slam-mirrorbot/commit/1e572f4fa3625ecceb953ce6d3e7cf7334a4d542#diff-c3d91f56f4c5d8b5af3d856d15a76bd5f00aa38d712691b91501734940761bdd)
 
-import os
-import time
-import logging
-import qbittorrentapi as qba
-import asyncio
+from logging import getLogger, FileHandler, StreamHandler, INFO, basicConfig
+from time import sleep
+from qbittorrentapi import NotFound404Error, Client as qbClient
+from flask import Flask, request
 
-from aiohttp import web
-import nodes
+from web import nodes
 
-LOGGER = logging.getLogger(__name__)
+app = Flask(__name__)
 
-routes = web.RouteTableDef()
+basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+                    handlers=[FileHandler('log.txt'), StreamHandler()],
+                    level=INFO)
+
+LOGGER = getLogger(__name__)
 
 page = """
 <html lang="en">
@@ -21,7 +24,7 @@ page = """
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Torrent File Selector</title>
-    <link rel="icon" href="https://telegra.ph/file/6507910fd06d18dfaba82.jpg" type="image/jpg">
+    <link rel="icon" href="https://telegra.ph/file/cc06d0c613491080cc174.png" type="image/jpg">
     <script
       src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
       integrity="sha256-4+XzXVhsDmqanXGHaHvgh1gMQKX40OUvDEBTu8JcmNs="
@@ -40,7 +43,6 @@ page = """
       crossorigin="anonymous"
     />
 <style>
-
 *{
     margin: 0;
     padding: 0;
@@ -51,11 +53,9 @@ page = """
     outline: none !important;
     color: white;
 }
-
 body{
     background-color: #0D1117;
 }
-
 header{
     margin: 3vh 1vw;
     padding: 0.5rem 1rem 0.5rem 1rem;
@@ -67,43 +67,35 @@ header{
     background-color: #161B22;
     border: 2px solid rgba(255, 255, 255, 0.11);
 }
-
 header:hover, section:hover{
     box-shadow: 0px 0px 15px black;
 }
-
 .brand{
     display: flex;
     align-items: center;
 }
-
-img{ 
+img{
     width: 2.5rem;
     height: 2.5rem;
     border: 2px solid black;
     border-radius: 50%;
 }
-
 .name{
     margin-left: 1vw;
     font-size: 1.5rem;
 }
-
 .intro{
     text-align: center;
     margin-bottom: 2vh;
     margin-top: 1vh;
 }
-
 .social a{
     font-size: 1.5rem;
     padding-left: 1vw;
 }
-
 .social a:hover, .brand:hover{
     filter: invert(0.3);
 }
-
 section{
     margin: 0vh 1vw;
     margin-bottom: 10vh;
@@ -114,37 +106,30 @@ section{
     border-radius: 20px;
     background-color: #161B22 ;
 }
-
 li:nth-child(1){
     padding: 1rem 1rem 0.5rem 1rem;
 }
-
 li:nth-child(n+1){
     padding-left: 1rem;
 }
-
 li label{
     padding-left: 0.5rem;
 }
-
 li{
     padding-bottom: 0.5rem;
 }
-
 span{
     margin-right: 0.5rem;
     cursor: pointer;
     user-select: none;
     transition: transform 200ms ease-out;
 }
-
 span.active{
     transform: rotate(90deg);
     -ms-transform: rotate(90deg);	 /* for IE  */
     -webkit-transform: rotate(90deg);/* for browsers supporting webkit (such as chrome, firefox, safari etc.). */
     display: inline-block;
 }
-
 ul{
     margin: 1vh 1vw 1vh 1vw;
     padding: 0 0 0.5rem 0;
@@ -153,12 +138,10 @@ ul{
     background-color: #1c2129;
     overflow: hidden;
 }
-
 input[type="checkbox"]{
     cursor: pointer;
     user-select: none;
 }
-
 input[type="submit"] {
     border-radius: 20px;
     margin: 2vh auto 1vh auto;
@@ -170,26 +153,37 @@ input[type="submit"] {
     font-size: 16px;
     font-weight: 500;
 }
-
 input[type="submit"]:hover, input[type="submit"]:focus{
     background-color: rgba(255, 255, 255, 0.068);
     cursor: pointer;
 }
-
 @media (max-width: 768px){
     input[type="submit"]{
         width: 100%;
     }
 }
-  
 #treeview .parent {
     position: relative;
 }
-  
 #treeview .parent > ul {
     display: none;
 }
-
+#sticks {
+  margin: 0vh 1vw;
+  margin-bottom: 1vh;
+  padding: 1vh 3vw;
+  display: flex;
+  flex-direction: column;
+  border: 2px solid rgba(255, 255, 255, 0.11);
+  border-radius: 20px;
+  background-color: #161b22;
+  align-items: center;
+}
+#sticks.stick {
+  position: sticky;
+  top: 0;
+  z-index: 10000;
+}
 </style>
 </head>
 <body>
@@ -197,39 +191,39 @@ input[type="submit"]:hover, input[type="submit"]:focus{
     <header>
       <div class="brand">
         <img
-          src="https://telegra.ph/file/6507910fd06d18dfaba82.jpg"
+          src="https://telegra.ph/file/cc06d0c613491080cc174.png"
           alt="logo"
         />
-        <a href="https://t.me/SlamMirrorUpdates"> 
-          <h2 class="name">slam-mirrorbot</h2>
+        <a href="https://t.me/SparkXcloud">
+          <h2 class="name">Qbittorrent Selection</h2>
         </a>
       </div>
       <div class="social">
-        <a href="https://github.com/Spark-X-Cloud/SparkXcloud-Gdrive-MirrorBot"><i class="fab fa-github"></i></a>
+        <a href="https://www.github.com/Spark-X-Cloud/SparkXcloud-Gdrive-MirrorBot"><i class="fab fa-github"></i></a>
         <a href="https://t.me/SparkXcloud"><i class="fab fa-telegram"></i></a>
       </div>
     </header>
-    <section>
-      <h2 class="intro">Select the files you want to download</h2>
+    <div id="sticks">
+        <h4>Selected files: <b id="checked_files">0</b> of <b id="total_files">0</b></h4>
+        <h4>Selected files size: <b id="checked_size">0</b> of <b id="total_size">0</b></h4>
+    </div>
+      <section>
       <form action="{form_url}" method="POST">
        {My_content}
        <input type="submit" name="Select these files ;)">
       </form>
     </section>
-
     <script>
       $(document).ready(function () {
+        docready();
         var tags = $("li").filter(function () {
           return $(this).find("ul").length !== 0;
         });
-
         tags.each(function () {
           $(this).addClass("parent");
         });
-
         $("body").find("ul:first-child").attr("id", "treeview");
         $(".parent").prepend("<span>▶</span>");
-
         $("span").click(function (e) {
           e.stopPropagation();
           e.stopImmediatePropagation();
@@ -238,41 +232,39 @@ input[type="submit"]:hover, input[type="submit"]:focus{
           else $(this).addClass("active");
         });
       });
-
       if(document.getElementsByTagName("ul").length >= 10){
-      var labels = document.querySelectorAll("label");
-      //Shorting the file/folder names
-      labels.forEach(function (label) {
-        if (label.innerText.toString().split(" ").length >= 6) {
-          let FirstPart = label.innerText
-            .toString()
-            .split(" ")
-            .slice(0, 3)
-            .join(" ");
-          let SecondPart = label.innerText
-            .toString()
-            .split(" ")
-            .splice(-3)
-            .join(" ");
-          label.innerText = `${FirstPart}... ${SecondPart}`;
-        }
-        if (label.innerText.toString().split(".").length >= 6) {
-          let first = label.innerText
-            .toString()
-            .split(".")
-            .slice(0, 3)
-            .join(" ");
-          let second = label.innerText
-            .toString()
-            .split(".")
-            .splice(-3)
-            .join(".");
-          label.innerText = `${first}... ${second}`;
-        }
-      });
-     }
+        var labels = document.querySelectorAll("label");
+        //Shorting the file/folder names
+        labels.forEach(function (label) {
+            if (label.innerText.toString().split(" ").length >= 9) {
+                let FirstPart = label.innerText
+                    .toString()
+                    .split(" ")
+                    .slice(0, 5)
+                    .join(" ");
+                let SecondPart = label.innerText
+                    .toString()
+                    .split(" ")
+                    .splice(-5)
+                    .join(" ");
+                label.innerText = `${FirstPart}... ${SecondPart}`;
+            }
+            if (label.innerText.toString().split(".").length >= 9) {
+                let first = label.innerText
+                    .toString()
+                    .split(".")
+                    .slice(0, 5)
+                    .join(" ");
+                let second = label.innerText
+                    .toString()
+                    .split(".")
+                    .splice(-5)
+                    .join(".");
+                label.innerText = `${first}... ${second}`;
+            }
+        });
+    }
     </script>
-
 <script>
 $('input[type="checkbox"]').change(function(e) {
   var checked = $(this).prop("checked"),
@@ -294,7 +286,6 @@ $('input[type="checkbox"]').change(function(e) {
       let returnValue = all = ($(this).children('input[type="checkbox"]').prop("checked") === checked);
       return returnValue;
     });
-    
     if (all && checked) {
       parent.children('input[type="checkbox"]').prop({
         indeterminate: false,
@@ -315,6 +306,69 @@ $('input[type="checkbox"]').change(function(e) {
   checkSiblings(container);
 });
 </script>
+<script>
+    function docready () {
+        $("label[for^='filenode_']").css("cursor", "pointer");
+        $("label[for^='filenode_']").click(function () {
+            $(this).prev().click();
+        });
+        checked_size();
+        checkingfiles();
+        var total_files = $("label[for^='filenode_']").length;
+        $("#total_files").text(total_files);
+        var total_size = 0;
+        var ffilenode = $("label[for^='filenode_']");
+        ffilenode.each(function () {
+            var size = parseFloat($(this).data("size"));
+            total_size += size;
+            $(this).append(" - " + humanFileSize(size));
+        });
+        $("#total_size").text(humanFileSize(total_size));
+    };
+    function checked_size() {
+        var checked_size = 0;
+        var checkedboxes = $("input[name^='filenode_']:checked");
+        checkedboxes.each(function () {
+            var size = parseFloat($(this).data("size"));
+            checked_size += size;
+        });
+        $("#checked_size").text(humanFileSize(checked_size));
+    }
+    function checkingfiles() {
+        var checked_files = $("input[name^='filenode_']:checked").length;
+        $("#checked_files").text(checked_files);
+    }
+    $("input[name^='foldernode_']").change(function () {
+        checkingfiles();
+        checked_size();
+    });
+    $("input[name^='filenode_']").change(function () {
+        checkingfiles();
+        checked_size();
+    });
+    function humanFileSize(size) {
+        var i = -1;
+        var byteUnits = [' kB', ' MB', ' GB', ' TB', 'PB', 'EB', 'ZB', 'YB'];
+        do {
+            size = size / 1024;
+            i++;
+        } while (size > 1024);
+        return Math.max(size, 0).toFixed(1) + byteUnits[i];
+    }
+    function sticking() {
+        var window_top = $(window).scrollTop();
+        var div_top = $('.brand').offset().top;
+        if (window_top > div_top) {
+            $('#sticks').addClass('stick');
+        } else {
+            $('#sticks').removeClass('stick');
+        }
+    }
+    $(function () {
+        $(window).scroll(sticking);
+        sticking();
+    });
+</script>
 </body>
 </html>
 """
@@ -326,7 +380,7 @@ code_page = """
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Torrent Code Checker</title>
-    <link rel="icon" href="https://telegra.ph/file/6507910fd06d18dfaba82.jpg" type="image/jpg"> 
+    <link rel="icon" href="https://telegra.ph/file/cc06d0c613491080cc174.png" type="image/jpg">
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -349,11 +403,9 @@ code_page = """
     text-decoration: none;
     color: white;
 }
-
 body{
     background-color: #0D1117;
 }
-
 header{
     margin: 3vh 1vw;
     padding: 0.5rem 1rem 0.5rem 1rem;
@@ -365,45 +417,37 @@ header{
     background-color: #161B22;
     border: 2px solid rgba(255, 255, 255, 0.11);
 }
-
 header:hover, section:hover{
     box-shadow: 0px 0px 15px black;
 }
-
 .brand{
     display: flex;
     align-items: center;
 }
-
-img{ 
+img{
     width: 2.5rem;
     height: 2.5rem;
     border: 2px solid black;
     border-radius: 50%;
 }
-
 .name{
     color: white;
     margin-left: 1vw;
     font-size: 1.5rem;
 }
-
 .intro{
     text-align: center;
     margin-bottom: 2vh;
     margin-top: 1vh;
 }
-
 .social a{
     font-size: 1.5rem;
     color: white;
     padding-left: 1vw;
 }
-
 .social a:hover, .brand:hover{
     filter: invert(0.3);
 }
-
 section{
     margin: 0vh 1vw;
     margin-bottom: 10vh;
@@ -415,14 +459,12 @@ section{
     background-color: #161B22 ;
     color: white;
 }
-
 section form{
     display: flex;
     margin-left: auto;
     margin-right: auto;
     flex-direction: column;
 }
-
 section div{
     background-color: #0D1117;
     border-radius: 20px;
@@ -430,14 +472,12 @@ section div{
     padding: 0.7rem;
     margin-top: 2vh;
 }
-
 section label{
     font-size: larger;
     font-weight: 500;
     margin: 0 0 0.5vh 1.5vw;
     display: block;
 }
-
 section input[type="text"]{
     border-radius: 20px;
     outline: none;
@@ -449,11 +489,9 @@ section input[type="text"]{
     background-color: #3e475531;
     box-shadow: inset 0px 0px 10px black;
 }
-
 section input[type="text"]:focus{
     border-color: rgba(255, 255, 255, 0.404);
 }
-
 section button{
     border-radius: 20px;
     margin-top: 1vh;
@@ -467,11 +505,9 @@ section button{
     cursor: pointer;
     transition: background-color 200ms ease;
 }
-
 section button:hover, section button:focus{
     background-color: rgba(255, 255, 255, 0.068);
 }
-
 section span{
     display: block;
     font-size: x-small;
@@ -482,27 +518,22 @@ section span{
     margin-right: auto;
     margin-bottom: 2vh;
 }
-
 @media (max-width: 768px) {
     section form{
         flex-direction: column;
         width: 90vw;
     }
-
     section div{
         max-width: 100%;
         margin-bottom: 1vh;
     }
-
     section label{
         margin-left: 3vw;
         margin-top: 1vh;
     }
-
     section input[type="text"]{
         width: calc(100% - 0.3rem);
     }
-
     section button{
         width: 100%;
         height: 5vh;
@@ -510,7 +541,6 @@ section span{
         margin-left: auto;
         margin-right: auto;
     }
-
     section span{
         margin-left: 5%;
     }
@@ -518,19 +548,19 @@ section span{
     </style>
   </head>
 <body>
-   <!--© Designed and coded by @HarshhaaReddy-Telegram-->
+   <!--© Designed and coded by @bipuldey19-Telegram-->
     <header>
       <div class="brand">
         <img
-          src="https://telegra.ph/file/4799cf2ef70b37c72e220.jpg"
+          src="https://telegra.ph/file/cc06d0c613491080cc174.png"
           alt="logo"
         />
         <a href="https://t.me/SparkXcloud">
-          <h2 class="name">SparkXcloud-Gdrive-MirrorBot</h2>
+          <h2 class="name">Qbittorrent Selection</h2>
         </a>
       </div>
       <div class="social">
-        <a href="https://github.com/Spark-X-Cloud/SparkXcloud-Gdrive-MirrorBot"><i class="fab fa-github"></i></a>
+        <a href="https://www.github.com/Spark-X-Cloud/SparkXcloud-Gdrive-MirrorBot"><i class="fab fa-github"></i></a>
         <a href="https://t.me/SparkXcloud"><i class="fab fa-telegram"></i></a>
       </div>
     </header>
@@ -554,52 +584,7 @@ section span{
 </html>
 """
 
-
-@routes.get('/slam/files/{hash_id}')
-async def list_torrent_contents(request):
-
-    torr = request.match_info["hash_id"]
-
-    gets = request.query
-
-    if not "pin_code" in gets.keys():
-        rend_page = code_page.replace("{form_url}", f"/slam/files/{torr}")
-        return web.Response(text=rend_page, content_type='text/html')
-
-    client = qba.Client(host="localhost", port="8090",
-                        username="admin", password="adminadmin")
-    client.auth_log_in()
-    try:
-        res = client.torrents_files(torrent_hash=torr)
-    except qba.NotFound404Error:
-        raise web.HTTPNotFound()
-    count = 0
-    passw = ""
-    for n in str(torr):
-        if n.isdigit():
-            passw += str(n)
-            count += 1
-        if count == 4:
-            break
-    if isinstance(passw, bool):
-        raise web.HTTPNotFound()
-    pincode = passw
-    if gets["pin_code"] != pincode:
-        return web.Response(text="Incorrect pin code")
-
-    par = nodes.make_tree(res)
-
-    cont = ["", 0]
-    nodes.create_list(par, cont)
-
-    rend_page = page.replace("{My_content}", cont[0])
-    rend_page = rend_page.replace(
-        "{form_url}", f"/slam/files/{torr}?pin_code={pincode}")
-    client.auth_log_out()
-    return web.Response(text=rend_page, content_type='text/html')
-
-
-async def re_verfiy(paused, resumed, client, torr):
+def re_verfiy(paused, resumed, client, hash_id):
 
     paused = paused.strip()
     resumed = resumed.strip()
@@ -610,65 +595,80 @@ async def re_verfiy(paused, resumed, client, torr):
     k = 0
     while True:
 
-        res = client.torrents_files(torrent_hash=torr)
+        res = client.torrents_files(torrent_hash=hash_id)
         verify = True
 
         for i in res:
-            if str(i.id) in paused:
-                if i.priority == 0:
-                    continue
+            if str(i.id) in paused and i.priority != 0:
                 verify = False
                 break
 
-            if str(i.id) in resumed:
-                if i.priority != 0:
-                    continue
+            if str(i.id) in resumed and i.priority == 0:
                 verify = False
                 break
 
-        if not verify:
-            LOGGER.error("Reverification Failed, correcting stuff...")
-            client.auth_log_out()
-            client = qba.Client(host="localhost", port="8090",
-                               username="admin", password="adminadmin")
-            client.auth_log_in()
-            try:
-                client.torrents_file_priority(
-                    torrent_hash=torr, file_ids=paused, priority=0)
-            except:
-                LOGGER.error("Errored in reverification paused")
-            try:
-                client.torrents_file_priority(
-                    torrent_hash=torr, file_ids=resumed, priority=1)
-            except:
-                LOGGER.error("Errored in reverification resumed")
-            client.auth_log_out()
-        else:
+        if verify:
             break
+        LOGGER.info("Reverification Failed: correcting stuff...")
+        client.auth_log_out()
+        sleep(1)
+        client = qbClient(host="localhost", port="8090")
+        try:
+            client.torrents_file_priority(torrent_hash=hash_id, file_ids=paused, priority=0)
+        except NotFound404Error:
+            raise NotFound404Error
+        except Exception as e:
+            LOGGER.error(f"{e} Errored in reverification paused")
+        try:
+            client.torrents_file_priority(torrent_hash=hash_id, file_ids=resumed, priority=1)
+        except NotFound404Error:
+            raise NotFound404Error
+        except Exception as e:
+            LOGGER.error(f"{e} Errored in reverification resumed")
         k += 1
-        if k >= 4:
+        if k > 5:
             return False
+    LOGGER.info("Verified")
     return True
 
+@app.route('/app/files/<string:hash_id>', methods=['GET'])
+def list_torrent_contents(hash_id):
 
-@routes.post('/slam/files/{hash_id}')
-async def set_priority(request):
+    if "pin_code" not in request.args.keys():
+        return code_page.replace("{form_url}", f"/app/files/{hash_id}")
 
-    torr = request.match_info["hash_id"]
-    client = qba.Client(host="localhost", port="8090",
-                        username="admin", password="adminadmin")
-    client.auth_log_in()
+    pincode = ""
+    for nbr in hash_id:
+        if nbr.isdigit():
+            pincode += str(nbr)
+        if len(pincode) == 4:
+            break
+    if request.args["pin_code"] != pincode:
+        return "<h1>Incorrect pin code</h1>"
 
-    data = await request.post()
+    client = qbClient(host="localhost", port="8090")
+    res = client.torrents_files(torrent_hash=hash_id)
+
+    par = nodes.make_tree(res)
+    cont = ["", 0]
+    nodes.create_list(par, cont)
+
+    client.auth_log_out()
+    return page.replace("{My_content}", cont[0]).replace("{form_url}", f"/app/files/{hash_id}?pin_code={pincode}")
+
+@app.route('/app/files/<string:hash_id>', methods=['POST'])
+def set_priority(hash_id):
+
+    client = qbClient(host="localhost", port="8090")
     resume = ""
     pause = ""
-    data = dict(data)
+    data = dict(request.form)
 
-    for i in data.keys():
+    for i, value in data.items():
         if i.find("filenode") != -1:
             node_no = i.split("_")[-1]
 
-            if data[i] == "on":
+            if value == "on":
                 resume += f"{node_no}|"
             else:
                 pause += f"{node_no}|"
@@ -677,61 +677,30 @@ async def set_priority(request):
     resume = resume.strip("|")
 
     try:
-        client.torrents_file_priority(
-            torrent_hash=torr, file_ids=pause, priority=0)
-    except qba.NotFound404Error:
-        raise web.HTTPNotFound()
-    except:
-        LOGGER.error("Errored in paused")
-
+        client.torrents_file_priority(torrent_hash=hash_id, file_ids=pause, priority=0)
+    except NotFound404Error:
+        raise NotFound404Error
+    except Exception as e:
+        LOGGER.error(f"{e} Errored in paused")
     try:
-        client.torrents_file_priority(
-            torrent_hash=torr, file_ids=resume, priority=1)
-    except qba.NotFound404Error:
-        raise web.HTTPNotFound()
-    except:
-        LOGGER.error("Errored in resumed")
-
-    await asyncio.sleep(2)
-    if not await re_verfiy(pause, resume, client, torr):
-        LOGGER.error("The Torrent choose errored reverification failed")
+        client.torrents_file_priority(torrent_hash=hash_id, file_ids=resume, priority=1)
+    except NotFound404Error:
+        raise NotFound404Error
+    except Exception as e:
+        LOGGER.error(f"{e} Errored in resumed")
+    sleep(2)
+    if not re_verfiy(pause, resume, client, hash_id):
+        LOGGER.error("Verification Failed")
     client.auth_log_out()
-    return await list_torrent_contents(request)
+    return list_torrent_contents(hash_id)
 
+@app.route('/')
+def homepage():
+    return "<h1>See SparkXcloud-Gdrive-MirrorBot <a href='https://www.github.com/Spark-X-Cloud/SparkXcloud-Gdrive-MirrorBot'>@GitHub</a> By <a href='https://github.com/Spark-X-Cloud'>Anas</a></h1>"
 
-@routes.get('/')
-async def homepage(request):
+@app.errorhandler(NotFound404Error)
+def page_not_found(e):
+    return "<h1>404: Torrent not found. Mostly wrong hash input</h2>", 404
 
-    return web.Response(text="<h1>See SparkXcloud-Gdrive-MirrorBot <a href='https://github.com/Spark-X-Cloud/SparkXcloud-Gdrive-MirrorBot'>@GitHub</a> By <a href='https://github.com/Spark-X-Cloud'>Spark-X-Cloud</a></h1>", content_type="text/html")
-
-
-async def e404_middleware(app, handler):
-
-    async def middleware_handler(request):
-
-        try:
-            response = await handler(request)
-            if response.status == 404:
-                return web.Response(text="<h1>404: Page not found</h2><br><h3>SparkXcloud-Gdrive-MirrorBot</h3>", content_type="text/html")
-            return response
-        except web.HTTPException as ex:
-            if ex.status == 404:
-                return web.Response(text="<h1>404: Page not found</h2><br><h3>SparkXcloud-Gdrive-MirrorBot</h3>", content_type="text/html")
-            raise
-    return middleware_handler
-
-
-async def start_server():
-
-    app = web.Application(middlewares=[e404_middleware])
-    app.add_routes(routes)
-    return app
-
-
-async def start_server_async(port=8080):
-
-    app = web.Application(middlewares=[e404_middleware])
-    app.add_routes(routes)
-    runner = web.AppRunner(app)
-    await runner.setup()
-    await web.TCPSite(runner, "0.0.0.0", port).start()
+if __name__ == "__main__":
+    app.run()

@@ -1,14 +1,11 @@
 from bot.helper.ext_utils.bot_utils import get_readable_file_size, MirrorStatus
 
 
-class ExtractStatus:
+class SplitStatus:
     def __init__(self, name, path, size):
         self.__name = name
         self.__path = path
         self.__size = size
-
-    # The progress of extract function cannot be tracked. So we just return dummy values.
-    # If this is possible in future,we should implement it
 
     def progress(self):
         return '0'
@@ -29,7 +26,7 @@ class ExtractStatus:
         return '0s'
 
     def status(self):
-        return MirrorStatus.STATUS_EXTRACTING
+        return MirrorStatus.STATUS_SPLITTING
 
     def processed_bytes(self):
         return 0

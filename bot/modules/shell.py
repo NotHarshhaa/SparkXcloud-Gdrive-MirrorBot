@@ -1,7 +1,7 @@
-import subprocess
-from bot import LOGGER, dispatcher
-from telegram import ParseMode
+from subprocess import Popen, PIPE
 from telegram.ext import CommandHandler
+
+from bot import LOGGER, dispatcher
 from bot.helper.telegram_helper.filters import CustomFilters
 from bot.helper.telegram_helper.bot_commands import BotCommands
 
@@ -10,19 +10,17 @@ def shell(update, context):
     message = update.effective_message
     cmd = message.text.split(' ', 1)
     if len(cmd) == 1:
-        message.reply_text('𝐍𝐨 𝐜𝐨𝐦𝐦𝐚𝐧𝐝 𝐭𝐨 𝐞𝐱𝐞𝐜𝐮𝐭𝐞 𝐰𝐚𝐬 𝐠𝐢𝐯𝐞𝐧.')
-        return
+        return message.reply_text('𝐍𝐨 𝐜𝐨𝐦𝐦𝐚𝐧𝐝 𝐭𝐨 𝐞𝐱𝐞𝐜𝐮𝐭𝐞 𝐰𝐚𝐬 𝐠𝐢𝐯𝐞𝐧.', parse_mode='HTML')
     cmd = cmd[1]
-    process = subprocess.Popen(
-        cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+    process = Popen(cmd, stdout=PIPE, stderr=PIPE, shell=True)
     stdout, stderr = process.communicate()
     reply = ''
     stderr = stderr.decode()
     stdout = stdout.decode()
-    if stdout:
+    if len(stdout) != 0:
         reply += f"*Stdout*\n`{stdout}`\n"
         LOGGER.info(f"Shell - {cmd} - {stdout}")
-    if stderr:
+    if len(stderr) != 0:
         reply += f"*Stderr*\n`{stderr}`\n"
         LOGGER.error(f"Shell - {cmd} - {stderr}")
     if len(reply) > 3000:
@@ -34,10 +32,12 @@ def shell(update, context):
                 filename=doc.name,
                 reply_to_message_id=message.message_id,
                 chat_id=message.chat_id)
+    elif len(reply) != 0:
+        message.reply_text(reply, parse_mode='Markdown')
     else:
-        message.reply_text(reply, parse_mode=ParseMode.MARKDOWN)
+        message.reply_text('No Reply', parse_mode='Markdown')
 
 
-SHELL_HANDLER = CommandHandler(BotCommands.ShellCommand, shell, 
+SHELL_HANDLER = CommandHandler(BotCommands.ShellCommand, shell,
                                                   filters=CustomFilters.owner_filter, run_async=True)
 dispatcher.add_handler(SHELL_HANDLER)

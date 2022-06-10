@@ -2,26 +2,25 @@
 # (c) https://github.com/Spark-X-Cloud/SparkXcloud-Gdrive-MirrorBot
 # All rights reserved
 
-import time
-import requests
-import os
-import subprocess
-from dotenv import load_dotenv
+from time import sleep
+from requests import get as rget
+from os import environ
+from logging import error as logerror
 
-CONFIG_FILE_URL = os.environ.get('CONFIG_FILE_URL', None)
-if CONFIG_FILE_URL is not None:
-    out = subprocess.run(["wget", "-q", "-O", "config.env", CONFIG_FILE_URL])
-
-load_dotenv('config.env')
-
-BASE_URL = os.environ.get('BASE_URL_OF_BOT', None)
-if len(BASE_URL) == 0:
+BASE_URL = environ.get('BASE_URL_OF_BOT', None)
+try:
+    if len(BASE_URL) == 0:
+        raise TypeError
+    BASE_URL = BASE_URL.rstrip("/")
+except TypeError:
     BASE_URL = None
-
-IS_VPS = os.environ.get('IS_VPS', 'False')
-IS_VPS = IS_VPS.lower() == 'true'
-
-if not IS_VPS and BASE_URL is not None:
+PORT = environ.get('PORT', None)
+if PORT is not None and BASE_URL is not None:
     while True:
-        time.sleep(1000)
-        status = requests.get(BASE_URL).status_code
+        try:
+            rget(BASE_URL).status_code
+            sleep(600)
+        except Exception as e:
+            logerror(f"alive.py: {e}")
+            sleep(2)
+            continue
