@@ -199,42 +199,7 @@ def bot_help(update, context):
     reply_markup = InlineKeyboardMarkup(button.build_menu(1))
     sendMarkup(help_string, context.bot, update.message, reply_markup)
 
-botcmds = [
-
-        (f'{BotCommands.MirrorCommand}', 'Mirror'),
-        (f'{BotCommands.ZipMirrorCommand}','Mirror and upload as zip'),
-        (f'{BotCommands.UnzipMirrorCommand}','Mirror and extract files'),
-        (f'{BotCommands.QbMirrorCommand}','Mirror torrent using qBittorrent'),
-        (f'{BotCommands.QbZipMirrorCommand}','Mirror torrent and upload as zip using qb'),
-        (f'{BotCommands.QbUnzipMirrorCommand}','Mirror torrent and extract files using qb'),
-        (f'{BotCommands.WatchCommand}','Mirror yt-dlp supported link'),
-        (f'{BotCommands.ZipWatchCommand}','Mirror yt-dlp supported link as zip'),
-        (f'{BotCommands.CloneCommand}','Copy file/folder to Drive'),
-        (f'{BotCommands.LeechCommand}','Leech'),
-        (f'{BotCommands.ZipLeechCommand}','Leech and upload as zip'),
-        (f'{BotCommands.UnzipLeechCommand}','Leech and extract files'),
-        (f'{BotCommands.QbLeechCommand}','Leech torrent using qBittorrent'),
-        (f'{BotCommands.QbZipLeechCommand}','Leech torrent and upload as zip using qb'),
-        (f'{BotCommands.QbUnzipLeechCommand}','Leech torrent and extract using qb'),
-        (f'{BotCommands.LeechWatchCommand}','Leech yt-dlp supported link'),
-        (f'{BotCommands.LeechZipWatchCommand}','Leech yt-dlp supported link as zip'),
-        (f'{BotCommands.CountCommand}','Count file/folder of Drive'),
-        (f'{BotCommands.DeleteCommand}','Delete file/folder from Drive'),
-        (f'{BotCommands.CancelMirror}','Cancel a task'),
-        (f'{BotCommands.CancelAllCommand}','Cancel all downloading tasks'),
-        (f'{BotCommands.ListCommand}','Search in Drive'),
-        (f'{BotCommands.LeechSetCommand}','Leech settings'),
-        (f'{BotCommands.SetThumbCommand}','Set thumbnail'),
-        (f'{BotCommands.StatusCommand}','Get mirror status message'),
-        (f'{BotCommands.StatsCommand}','Bot usage stats'),
-        (f'{BotCommands.PingCommand}','Ping the bot'),
-        (f'{BotCommands.RestartCommand}','Restart the bot'),
-        (f'{BotCommands.LogCommand}','Get the bot Log'),
-        (f'{BotCommands.HelpCommand}','Get detailed help')
-    ]
-
 def main():
-    # bot.set_my_commands(botcmds)
     start_cleanup()
     if INCOMPLETE_TASK_NOTIFIER and DB_URI is not None:
         notifier_dict = DbManger().get_incomplete_tasks()
