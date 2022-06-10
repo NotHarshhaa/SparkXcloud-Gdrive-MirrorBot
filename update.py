@@ -37,12 +37,12 @@ try:
     if len(UPSTREAM_REPO) == 0:
        raise TypeError
 except:
-    UPSTREAM_REPO = "https://github.com/https://github.com/harshhaareddy/SparkXcloud-Gdrive-MirrorBot"
+    UPSTREAM_REPO = "https://github.com/harshhaareddy/SparkXcloud-Gdrive-MirrorBot"
 try:
     if len(UPSTREAM_BRANCH) == 0:
        raise TypeError
 except:
-    UPSTREAM_BRANCH = 'h-code'
+    UPSTREAM_BRANCH = 'upstream'
 
 if ospath.exists('.git'):
     srun(["rm", "-rf", ".git"])
