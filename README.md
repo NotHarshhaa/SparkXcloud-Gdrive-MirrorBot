@@ -1,4 +1,4 @@
-![SparkXcloud](https://github.com/harshhaareddy/SparkXcloud-Gdrive-MirrorBot/raw/master/assets/banner.png)
+![SparkXcloud](https://github.com/Spark-X-Cloud/SparkXcloud-Gdrive-MirrorBot/raw/master/assets/banner.png)
 
 # SparkXcloud-Gdrive-MirrorBot/LeechBot v2.0
 [![Sponsor](https://img.shields.io/badge/sponsor-30363D?style=for-the-badge&logo=GitHub-Sponsors&logoColor=#white)](https://ko-fi.com/harshhaareddy)
@@ -410,8 +410,10 @@ sudo docker-compose start
 
 ------
 
-## Deploying on Heroku with Github Workflow
-<p><a href="https://github.com/Spark-X-Cloud/SparkXcloud-Gdrive-MirrorBot/blob/majorupdate/heroku-guide.md"> <img src="https://img.shields.io/badge/Deploy%20Guide-blueviolet?style=for-the-badge&logo=heroku" width="180""/></a></p>
+## Deploying on Heroku 
+
+### Note : Use Only this method for Heroku deployments
+<p><a href="https://github.com/Spark-X-Cloud/SparkXcloud-Gdrive-MirrorBot/tree/heroku"> <img src="https://img.shields.io/badge/Deploy%20Guide-blueviolet?style=for-the-badge&logo=heroku" width="170""/></a></p>
 
 ## Deploying on Heroku with heroku-cli and Goorm IDE
 <p><a href="https://telegra.ph/How-to-Deploy-a-Mirror-Bot-to-Heroku-with-CLI-05-06"> <img src="https://img.shields.io/badge/see%20on%20telegraph-grey?style=for-the-badge" width="190""/></a></p>
