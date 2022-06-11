@@ -9,7 +9,7 @@
 2. Don't add variables in heroku Environment, you can only add `CONFIG_FILE_URL`.
 3. Don't deploy using hmanager or github integration.
 4. This branch use megasdkrest and latest version of qBittorrent.
-5. More notes will be added soon for h-code branch...
+5. More notes will be added soon for upstream branch...
 
 ------
 

@@ -14,6 +14,7 @@ google-auth-oauthlib
 gunicorn
 lk21
 lxml
+megasdkrestclient
 pillow
 psutil
 psycopg2-binary
