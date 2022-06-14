@@ -58,7 +58,7 @@ def setLeechType(update, context):
     message = query.message
     user_id = query.from_user.id
     data = query.data
-    data = data.split(" ")
+    data = data.split()
     if user_id != int(data[1]):
         query.answer(text="𝐍𝐨𝐭 𝐘𝐨𝐮𝐫𝐬!", show_alert=True)
     elif data[2] == "doc":

@@ -20,34 +20,40 @@ def _watch(bot, message, isZip=False, isLeech=False, multi=0):
     user_id = message.from_user.id
     msg_id = message.message_id
 
-    try:
-        link = mssg.split(' ')[1].strip()
+    link = mssg.split()
+    if len(link) > 1:
+        link = link[1].strip()
         if link.isdigit():
             multi = int(link)
-            raise IndexError
+            link = ''
         elif link.startswith(("|", "pswd:", "args:")):
-            raise IndexError
-    except:
+            link = ''
+    else:
         link = ''
-    try:
-        name_arg = mssg.split('|', maxsplit=1)
-        if 'args: ' in name_arg[0]:
-            raise IndexError
+
+    name = mssg.split('|', maxsplit=1)
+    if len(name) > 1:
+        if 'args: ' in name[0] or 'pswd: ' in name[0]:
+            name = ''
         else:
-            name = name_arg[1]
-        name = re_split(r' pswd: | args: ', name)[0]
-        name = name.strip()
-    except:
+            name = name[1]
+        if name != '':
+            name = re_split('pswd:|args:', name)[0]
+            name = name.strip()
+    else:
         name = ''
-    try:
-        pswd = mssg.split(' pswd: ')[1]
+
+    pswd = mssg.split(' pswd: ')
+    if len(pswd) > 1:
+        pswd = pswd[1]
         pswd = pswd.split(' args: ')[0]
-    except:
+    else:
         pswd = None
 
-    try:
-        args = mssg.split(' args: ')[1]
-    except:
+    args = mssg.split(' args: ')
+    if len(args) > 1:
+        args = args[1]
+    else:
         args = None
 
     if message.from_user.username:
@@ -151,12 +157,12 @@ def _watch(bot, message, isZip=False, isLeech=False, multi=0):
 
     Thread(target=_auto_cancel, args=(bmsg, msg_id)).start()
     if multi > 1:
-        sleep(3)
+        sleep(4)
         nextmsg = type('nextmsg', (object, ), {'chat_id': message.chat_id, 'message_id': message.reply_to_message.message_id + 1})
         nextmsg = sendMessage(mssg.split(' ')[0], bot, nextmsg)
         nextmsg.from_user.id = message.from_user.id
         multi -= 1
-        sleep(3)
+        sleep(4)
         Thread(target=_watch, args=(bot, nextmsg, isZip, isLeech, multi)).start()
 
 def _qual_subbuttons(task_id, qual, msg):
@@ -222,7 +228,8 @@ def select_format(update, context):
     elif data[2] == "dict":
         query.answer()
         qual = data[3]
-        return _qual_subbuttons(task_id, qual, msg)
+        _qual_subbuttons(task_id, qual, msg)
+        return
     elif data[2] == "back":
         query.answer()
         return editMessage('Choose Video Quality:', msg, task_info[4])
@@ -232,7 +239,8 @@ def select_format(update, context):
             playlist = True
         else:
             playlist = False
-        return _audio_subbuttons(task_id, msg, playlist)
+        _audio_subbuttons(task_id, msg, playlist)
+        return
     elif data[2] == "cancel":
         query.answer()
         editMessage('Task has been cancelled.', msg)
