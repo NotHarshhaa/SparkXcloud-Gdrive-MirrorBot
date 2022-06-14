@@ -13,8 +13,8 @@ from bot.helper.telegram_helper import button_build
 def cancel_mirror(update, context):
     args = update.message.text.split(" ", maxsplit=1)
     user_id = update.message.from_user.id
-    if len(args) > 1:
-        gid = args[1]
+    if len(context.args) == 1:
+        gid = context.args[0]
         dl = getDownloadByGid(gid)
         if not dl:
             return sendMessage(f"GID: <code>{gid}</code> 𝐍𝐨𝐭 𝐅𝐨𝐮𝐧𝐝.", context.bot, update.message)
@@ -28,7 +28,7 @@ def cancel_mirror(update, context):
                 dl = None
         if not dl:
             return sendMessage("𝐓𝐡𝐢𝐬 𝐢𝐬 𝐧𝐨𝐭 𝐚𝐧 𝐚𝐜𝐭𝐢𝐯𝐞 𝐭𝐚𝐬𝐤!", context.bot, update.message)
-    elif len(args) == 1:
+    elif len(context.args) == 0:
         msg = f"𝐑𝐞𝐩𝐥𝐲 𝐭𝐨 𝐚𝐧 𝐚𝐜𝐭𝐢𝐯𝐞 <code>/{BotCommands.MirrorCommand}</code> 𝐦𝐞𝐬𝐬𝐚𝐠𝐞 𝐰𝐡𝐢𝐜𝐡 𝐰𝐚𝐬 𝐮𝐬𝐞𝐝 𝐭𝐨 𝐬𝐭𝐚𝐫𝐭 𝐭𝐡𝐞 𝐝𝐨𝐰𝐧𝐥𝐨𝐚𝐝 𝐨𝐫 𝐬𝐞𝐧𝐝 <code>/{BotCommands.CancelMirror} GID</code> 𝐭𝐨 𝐜𝐚𝐧𝐜𝐞𝐥 𝐢𝐭!"
         return sendMessage(msg, context.bot, update.message)
 
@@ -71,7 +71,7 @@ def cancel_all_update(update, context):
     query = update.callback_query
     user_id = query.from_user.id
     data = query.data
-    data = data.split(" ")
+    data = data.split()
     if CustomFilters._owner_query(user_id):
         query.answer()
         query.message.delete()
