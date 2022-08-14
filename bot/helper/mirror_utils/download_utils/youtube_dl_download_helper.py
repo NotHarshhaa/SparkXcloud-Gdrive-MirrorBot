@@ -129,7 +129,7 @@ class YoutubeDLHelper:
                 if 'filesize_approx' in v:
                     self.size += v['filesize_approx']
                 elif 'filesize' in v:
-                    self.size += v['filesize']e
+                    self.size += v['filesize']
             if name == "":
                 self.name = realName.split(f" [{result['id'].replace('*', '_')}]")[0]
             else:
