@@ -188,7 +188,7 @@ input[type="submit"]:hover, input[type="submit"]:focus{
 <script>
 function s_validate() {
     if ($("input[name^='filenode_']:checked").length == 0) {
-        alert("Please select at least one file");
+        alert("Select one file at least!");
         return false;
         }
     }
