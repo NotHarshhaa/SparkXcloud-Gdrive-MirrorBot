@@ -41,6 +41,7 @@
 - Extensions Filter for the files to be uploaded/cloned.
 - Incomplete task notifier to get incomplete task messages after restart, works with database.
 - Almost all repository functions have been improved.
+- Custom Name for all links except torrents. For files you should add extension except yt-dlp links.
 - Many bugs have been fixed.
 ```
 -----
@@ -76,7 +77,7 @@
 - `UPSTREAM_BRANCH`: *Upstream branch for update. Default is `master`.*
 -----
 ### ➡️ Leech
-- `USER_SESSION_STRING`: *To download/upload from your telegram account. To generate session string use this command `python3 generate_string_session.py` after mounting repo folder for sure.* ***NOTE***: *you can't use bot with private message, use it with group or channel.*
+- `USER_SESSION_STRING`: *To download/upload from your telegram account. To generate session string use this command `python3 generate_string_session.py` after mounting repo folder for sure.* ***NOTE***: *You can't use bot with private message, use it with supergroup or channel.*
 - `TG_SPLIT_SIZE`: *Size of split in bytes. Default is `2GB`. Default is `4GB` if your account is premium.*
 - `AS_DOCUMENT`: *Default type of Telegram file upload. Default is `False` mean as media. `Bool`*
 - `EQUAL_SPLITS`: *Split files larger than **TG_SPLIT_SIZE** into equal parts size (Not working with zip cmd). Default is `False`. `Bool`*
