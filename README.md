@@ -32,7 +32,7 @@
 - Mirror/Leech/Watch/Clone/Count/Del by reply.
 - YT-DLP quality buttons.
 - Search on torrents with Torrent Search API or with variable plugins using qBittorrent search engine
-- Docker image support for linux `amd64, arm64, arm/v7, arm/v6, arm64/v8` (**Note**: Use `anasty17/mltb:arm64` for `arm64/v8` or oracle).
+- - Docker image support for linux `amd64, arm64/v8, arm/v7, s390x`. (**Note**: Use `anasty17/mltb:arm64` for `arm64/v8` or oracle).
 - Update bot at startup and with restart command using `UPSTREAM_REPO`.
 - Qbittorrent seed until reaching specific ratio or time.
 - Rss feed and filter. Based on this repository [rss-chan](https://github.com/hyPnOtICDo0g/rss-chan).
@@ -78,9 +78,9 @@
 -----
 ### ➡️ Leech
 - `USER_SESSION_STRING`: *To download/upload from your telegram account. To generate session string use this command `python3 generate_string_session.py` after mounting repo folder for sure.* ***NOTE***: *You can't use bot with private message, use it with supergroup or channel.*
-- `TG_SPLIT_SIZE`: *Size of split in bytes. Default is `2GB`. Default is `4GB` if your account is premium.*
+- `LEECH_SPLIT_SIZE`: *Size of split in bytes. Default is `2GB`. Default is `4GB` if your account is premium.*
 - `AS_DOCUMENT`: *Default type of Telegram file upload. Default is `False` mean as media. `Bool`*
-- `EQUAL_SPLITS`: *Split files larger than **TG_SPLIT_SIZE** into equal parts size (Not working with zip cmd). Default is `False`. `Bool`*
+- `EQUAL_SPLITS`: *Split files larger than **LEECH_SPLIT_SIZE** into equal parts size (Not working with zip cmd). Default is `False`. `Bool`*
 - `CUSTOM_FILENAME`: *Add custom word to leeched file name.*
 -----
 ### ➡️ qBittorrent
@@ -210,10 +210,10 @@ tgx, yts, eztv, torlock, rarbg
 ```
 - Direct links Supported:
 ```
-letsupload.io, hxfile.co, anonfiles.com, bayfiles.com, antfiles,
+mediafire, letsupload.io, hxfile.co, anonfiles.com, bayfiles.com, antfiles,
 fembed.com, fembed.net, femax20.com, layarkacaxxi.icu, fcdn.stream,
 sbplay.org, naniplay.com, naniplay.nanime.in, naniplay.nanime.biz, sbembed.com,
-streamtape.com, streamsb.net, feurl.com, pixeldrain.com, racaty.net,
+streamtape.com, streamsb.net, feurl.com, upload.ee, pixeldrain.com, racaty.net,
 1fichier.com, 1drv.ms (Only works for file not folder or business account),
 uptobox.com (Uptobox account must be premium), solidfiles.com
 ```
@@ -247,6 +247,11 @@ NTFS, RPM, SquashFS, UDF, VHD, XAR, Z.
 -----
 # How to deploy?
 *Deploying is pretty much straight forward and is divided into several steps as follows:*
+
+- Tutorial Video from A to Z:
+  - Thanks to [Wiszky](https://github.com/vishnoe115)
+ <p><a href="https://youtu.be/IUmq1paCiHI"> <img src="https://img.shields.io/badge/See%20Video-black?style=for-the-badge&logo=YouTube" width="160""/></a></p>
+
 ## ⬇️ Installing requirements
 
 - *Clone this repo:*

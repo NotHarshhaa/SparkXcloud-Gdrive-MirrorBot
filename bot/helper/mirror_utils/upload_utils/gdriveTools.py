@@ -394,9 +394,9 @@ class GoogleDriveHelper:
                 LOGGER.info(f"Total Attempts: {err.last_attempt.attempt_number}")
                 err = err.last_attempt.exception()
             err = str(err).replace('>', '').replace('<', '')
-            if "User rate limit exceeded" in str(err):
+            if "User rate limit exceeded" in err:
                 msg = "😑 𝐔𝐬𝐞𝐫 𝐑𝐚𝐭𝐞 𝐋𝐢𝐦𝐢𝐭 𝐄𝐱𝐜𝐞𝐞𝐝𝐞𝐝, 𝐎𝐧𝐜𝐞 𝐂𝐡𝐞𝐜𝐤 𝐮𝐫 𝐋𝐢𝐧𝐤 𝐅𝐢𝐫𝐬𝐭."
-            elif "File not found" in str(err):
+            elif "File not found" in err:
                 token_service = self.__alt_authorize()
                 if token_service is not None:
                     self.__service = token_service
@@ -721,7 +721,7 @@ class GoogleDriveHelper:
                 LOGGER.info(f"Total Attempts: {err.last_attempt.attempt_number}")
                 err = err.last_attempt.exception()
             err = str(err).replace('>', '').replace('<', '')
-            if "File not found" in str(err):
+            if "File not found" in err:
                 token_service = self.__alt_authorize()
                 if token_service is not None:
                     self.__service = token_service
@@ -777,7 +777,7 @@ class GoogleDriveHelper:
                 LOGGER.info(f"Total Attempts: {err.last_attempt.attempt_number}")
                 err = err.last_attempt.exception()
             err = str(err).replace('>', '').replace('<', '')
-            if "File not found" in str(err):
+            if "File not found" in err:
                 token_service = self.__alt_authorize()
                 if token_service is not None:
                     self.__service = token_service
@@ -807,7 +807,7 @@ class GoogleDriveHelper:
             err = str(err).replace('>', '').replace('<', '')
             if "downloadQuotaExceeded" in str(err):
                 err = "Download Quota Exceeded."
-            elif "File not found" in str(err):
+            elif "File not found" in err:
                 token_service = self.__alt_authorize()
                 if token_service is not None:
                     self.__service = token_service
