@@ -128,15 +128,13 @@ class AsyncExecutor:
         function(*args)
         self.continue_event.wait()
 
-listeners = []
 
-def add_mega_download(mega_link: str, path: str, listener):
+def add_mega_download(mega_link: str, path: str, listener, name: str):
     executor = AsyncExecutor()
     api = MegaApi(MEGA_API_KEY, None, None, 'mirror-leech-telegram-bot')
+    folder_api = None
     mega_listener = MegaAppListener(executor.continue_event, listener)
-    global listeners
     api.addListener(mega_listener)
-    listeners.append(mega_listener)
     if MEGA_EMAIL_ID is not None and MEGA_PASSWORD is not None:
         executor.do(api.login, (MEGA_EMAIL_ID, MEGA_PASSWORD))
     if get_mega_link_type(mega_link) == "file":
@@ -150,10 +148,17 @@ def add_mega_download(mega_link: str, path: str, listener):
         executor.do(folder_api.loginToFolder, (mega_link,))
         node = folder_api.authorizeNode(mega_listener.node)
     if mega_listener.error is not None:
-        return sendMessage(str(mega_listener.error), listener.bot, listener.message)
+        sendMessage(str(mega_listener.error), listener.bot, listener.message)
+        api.removeListener(mega_listener)
+        if folder_api is not None:
+            folder_api.removeListener(mega_listener)
+        return
+    if name:
+        mname = name
+    else:
+        mname = node.getName()
     if STOP_DUPLICATE and not listener.isLeech:
         LOGGER.info('Checking File/Folder if already in Drive')
-        mname = node.getName()
         if listener.isZip:
             mname = mname + ".zip"
         elif listener.extract:
@@ -165,7 +170,11 @@ def add_mega_download(mega_link: str, path: str, listener):
             smsg, button = GoogleDriveHelper().drive_list(mname, True)
             if smsg:
                 msg1 = "File/Folder is already available in Drive.\nHere are the search results:"
-                return sendMarkup(msg1, listener.bot, listener.message, button)
+                sendMarkup(msg1, listener.bot, listener.message, button)
+                api.removeListener(mega_listener)
+                if folder_api is not None:
+                    folder_api.removeListener(mega_listener)
+                return
     if any([ZIP_UNZIP_LIMIT, MEGA_LIMIT]):
         size = api.getSize(node)
         arch = any([listener.isZip, listener.extract])
@@ -184,6 +193,9 @@ def add_mega_download(mega_link: str, path: str, listener):
     listener.onDownloadStart()
     makedirs(path)
     gid = ''.join(SystemRandom().choices(ascii_letters + digits, k=8))
-    mega_listener.setValues(node.getName(), api.getSize(node), gid)
+    mega_listener.setValues(mname, api.getSize(node), gid)
     sendStatusMessage(listener.message, listener.bot)
-    executor.do(api.startDownload, (node, path))
+    executor.do(api.startDownload, (node, path, name, None, False, None))
+    api.removeListener(mega_listener)
+    if folder_api is not None:
+        folder_api.removeListener(mega_listener)
