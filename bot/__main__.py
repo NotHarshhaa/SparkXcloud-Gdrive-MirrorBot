@@ -222,7 +222,7 @@ def main():
                                  osremove(".restartmsg")
                              else:
                                 try:
-                                    bot.sendMessage(cid, msg, 'HTML')
+                                    bot.sendMessage(cid, msg, 'HTML', disable_web_page_preview=True)
                                 except Exception as e:
                                     LOGGER.error(e)
                              msg = ''
@@ -231,7 +231,7 @@ def main():
                      osremove(".restartmsg")
                 else:
                     try:
-                        bot.sendMessage(cid, msg, 'HTML')
+                        bot.sendMessage(cid, msg, 'HTML', disable_web_page_preview=True)
                     except Exception as e:
                         LOGGER.error(e)
 

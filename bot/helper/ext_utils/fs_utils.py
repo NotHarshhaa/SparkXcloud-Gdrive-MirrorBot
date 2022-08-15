@@ -106,7 +106,7 @@ def take_ss(video_file):
     duration = duration // 2
 
     status = srun(["ffmpeg", "-hide_banner", "-loglevel", "error", "-ss", str(duration),
-                        "-i", video_file, "-vframes", "1", des_dir])
+                    "-i", video_file, "-frames:v", "1", des_dir])
 
     if status.returncode != 0 or not ospath.lexists(des_dir):
         return None
@@ -139,7 +139,7 @@ def split_file(path, size, file_, dirpath, split_size, listener, start_time=0, i
                 return split_file(path, size, file_, dirpath, split_size, listener, start_time, i, True)
             lpd = get_media_info(out_path)[0]
             if lpd == 0:
-                LOGGER.error(f'Something went wrong while splitting mostly file is corrupted. Path: {path}')
+                LOGGER.error(f'Something went wrong while splitting, mostly file is corrupted. Path: {path}')
                 break
             elif lpd <= 4:
                 osremove(out_path)
@@ -160,7 +160,7 @@ def get_media_info(path):
         result = check_output(["ffprobe", "-hide_banner", "-loglevel", "error", "-print_format",
                                "json", "-show_format", path]).decode('utf-8')
     except Exception as e:
-        LOGGER.error(f'{e} Mostly file not Found!')
+        LOGGER.error(f'{e}. Mostly file not found!')
         return 0, None, None
 
     fields = jsnloads(result).get('format')
