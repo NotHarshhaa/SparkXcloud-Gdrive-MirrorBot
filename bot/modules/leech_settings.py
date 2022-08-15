@@ -104,7 +104,7 @@ def setThumb(update, context):
             mkdir(path)
         photo_msg = app.get_messages(update.message.chat.id, reply_to_message_ids=update.message.message_id)
         photo_dir = app.download_media(photo_msg, file_name=path)
-        des_dir = ospath.join(path, str(user_id) + ".jpg")
+        des_dir = ospath.join(path, f'{user_id}.jpg')
         Image.open(photo_dir).convert("RGB").save(des_dir, "JPEG")
         osremove(photo_dir)
         if DB_URI is not None:
