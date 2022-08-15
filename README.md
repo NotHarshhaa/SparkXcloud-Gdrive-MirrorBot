@@ -14,7 +14,7 @@
 -----
 ### ➡️ Spark-x-cloud mirrorbot main features :-
 ```
-- Select files from Torrent before downloading using qbittorrent.
+- Select files from Torrent before downloading using qbittorrent and aria2c.
 - Leech (splitting, thumbnail for each user, setting as document or as media for each user).
 - Stop duplicates for all tasks except yt-dlp tasks.
 - Zip/Unzip G-Drive links.
