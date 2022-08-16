@@ -17,6 +17,7 @@ from lk21 import Bypass
 from cfscrape import create_scraper
 from bs4 import BeautifulSoup
 from base64 import standard_b64encode
+from time import sleep
 
 from bot import LOGGER, UPTOBOX_TOKEN, CRYPT
 from bot.helper.ext_utils.bot_utils import is_gdtot_link
@@ -29,7 +30,7 @@ fmed_list = ['fembed.net', 'fembed.com', 'femax20.com', 'fcdn.stream', 'feurl.co
 def direct_link_generator(link: str):
     """ direct links generator """
     if 'youtube.com' in link or 'youtu.be' in link:
-        raise DirectDownloadLinkException(f"ERROR: Use watch cmds for Youtube links")
+        raise DirectDownloadLinkException(f"ERROR: Use ytdl cmds for Youtube links")
     elif 'yadi.sk' in link or 'disk.yandex.com' in link:
         return yandex_disk(link)
     elif 'mediafire.com' in link:
@@ -90,7 +91,7 @@ def yandex_disk(url: str) -> str:
 
 def uptobox(url: str) -> str:
     """ Uptobox direct link generator
-    based on https://github.com/jovanzers/WinTenCermin """
+    based on https://github.com/jovanzers/WinTenCermin and https://github.com/sinoobie/noobie-mirror """
     try:
         link = re_findall(r'\bhttps?://.*uptobox\.com\S+', url)[0]
     except IndexError:
@@ -107,7 +108,21 @@ def uptobox(url: str) -> str:
             file_link = f'https://uptobox.com/api/link?token={UPTOBOX_TOKEN}&file_code={file_id}'
             req = rget(file_link)
             result = req.json()
-            dl_url = result['data']['dlLink']
+            if result['message'].lower() == 'success':
+                dl_url = result['data']['dlLink']
+            elif result['message'].lower() == 'waiting needed':
+                waiting_time = result["data"]["waiting"] + 1
+                waiting_token = result["data"]["waitingToken"]
+                sleep(waiting_time)
+                req2 = rget(f"{file_link}&waitingToken={waiting_token}")
+                result2 = req2.json()
+                dl_url = result2['data']['dlLink']
+            elif result['message'].lower() == 'you need to wait before requesting a new download link':
+                cooldown = divmod(result['data']['waiting'], 60)
+                raise DirectDownloadLinkException(f"ERROR: Uptobox is being limited please wait {cooldown[0]} min {cooldown[1]} sec.")
+            else:
+                LOGGER.info(f"UPTOBOX_ERROR: {result}")
+                raise DirectDownloadLinkException(f"ERROR: {result['message']}")
     return dl_url
 
 def mediafire(url: str) -> str:
@@ -278,7 +293,7 @@ def fichier(link: str) -> str:
           raise DirectDownloadLinkException("ERROR: Unable to generate Direct Link 1fichier!")
         else:
           return dl_url
-    elif len(soup.find_all("div", {"class": "ct_warn"})) == 2:
+    elif len(soup.find_all("div", {"class": "ct_warn"})) == 3:
         str_2 = soup.find_all("div", {"class": "ct_warn"})[-1]
         if "you must wait" in str(str_2).lower():
             numbers = [int(word) for word in str(str_2).split() if word.isdigit()]
@@ -289,8 +304,8 @@ def fichier(link: str) -> str:
         elif "protect access" in str(str_2).lower():
           raise DirectDownloadLinkException(f"ERROR: This link requires a password!\n\n<b>This link requires a password!</b>\n- Insert sign <b>::</b> after the link and write the password after the sign.\n\n<b>Example:</b> https://1fichier.com/?smmtd8twfpm66awbqz04::love you</code>\n\n* No spaces between the signs <b>::</b>\n* For the password, you can use a space!")
         else:
-            raise DirectDownloadLinkException("ERROR: Error trying to generate Direct Link from 1fichier!")
-    elif len(soup.find_all("div", {"class": "ct_warn"})) == 3:
+            raise DirectDownloadLinkException("ERROR: Failed to generate Direct Link from 1fichier!")
+    elif len(soup.find_all("div", {"class": "ct_warn"})) == 4:
         str_1 = soup.find_all("div", {"class": "ct_warn"})[-2]
         str_3 = soup.find_all("div", {"class": "ct_warn"})[-1]
         if "you must wait" in str(str_1).lower():
