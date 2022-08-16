@@ -17,7 +17,7 @@
 - Select files from Torrent before downloading using qbittorrent and aria2c.
 - Leech (splitting, thumbnail for each user, setting as document or as media for each user).
 - Stop duplicates for all tasks except yt-dlp tasks.
-- Zip/Unzip G-Drive links.
+- Leech/Zip/Unzip G-Drive links.
 - Counting files/folders from Google Drive link.
 - View Link button, extra button to open file index link in broswer instead of direct download.
 - Status Pages for unlimited tasks.
@@ -34,7 +34,7 @@
 - Search on torrents with Torrent Search API or with variable plugins using qBittorrent search engine
 - - Docker image support for linux `amd64, arm64/v8, arm/v7, s390x`. (**Note**: Use `anasty17/mltb:arm64` for `arm64/v8` or oracle).
 - Update bot at startup and with restart command using `UPSTREAM_REPO`.
-- Qbittorrent seed until reaching specific ratio or time.
+- Bittorrent seed until reaching specific ratio or time.
 - Rss feed and filter. Based on this repository [rss-chan](https://github.com/hyPnOtICDo0g/rss-chan).
 - Save leech settings including thumbnails in database.
 - Mirror/Leech/Clone multi links/files with one command.
@@ -87,7 +87,6 @@
 - `BASE_URL_OF_BOT`: *Valid BASE URL where the bot is deployed to use qbittorrent web selection. Format of URL should be `http://myip`, where `myip` is the IP/Domain(public) of your bot or if you have chosen port other than `80` so write it in this format `http://myip:port` (`http` and not `https`). This Var is optional on VPS and required for Heroku specially to avoid app sleeping/idling. For Heroku fill `https://yourappname.herokuapp.com`. Still got idling? You can use http://cron-job.org to ping your Heroku app.*
 - `SERVER_PORT`: *Only For VPS even if `IS_VPS` is `False`, which is the **BASE_URL_OF_BOT** Port.*
 - `WEB_PINCODE`: *If empty or `False` means no more pincode required while qbit web selection. `Bool`*
-- `QB_SEED`: *QB torrent will be seeded after and while uploading until reaching specific ratio or time, edit `MaxRatio` or `GlobalMaxSeedingMinutes` or both from qbittorrent.conf (`-1` means no limit, but u can cancel manually by gid). **NOTE**: 1. Don't change `MaxRatioAction`, 2. Only works with `/qbmirror` and `/qbzipmirror`. Default is `False`. `Bool`*
   - ***Qbittorrent NOTE***: *If your facing ram exceeded issue then set limit for `MaxConnecs` and decrease `AsyncIOThreadsCount` in qbittorrent config.*
 -----
 ### ➡️ RSS
@@ -210,15 +209,10 @@ tgx, yts, eztv, torlock, rarbg
 ```
 - Direct links Supported:
 ```
-mediafire, letsupload.io, hxfile.co, anonfiles.com, bayfiles.com, antfiles,
-fembed.com, fembed.net, femax20.com, layarkacaxxi.icu, fcdn.stream,
-sbplay.org, naniplay.com, naniplay.nanime.in, naniplay.nanime.biz, sbembed.com,
-streamtape.com, streamsb.net, feurl.com, upload.ee, pixeldrain.com, racaty.net,
-1fichier.com, 1drv.ms (Only works for file not folder or business account),
-uptobox.com (Uptobox account must be premium), solidfiles.com
+ >mediafire, letsupload.io, hxfile.co, anonfiles.com, bayfiles.com, antfiles, fembed.com, fembed.net, femax20.com, layarkacaxxi.icu, fcdn.stream, sbplay.org, naniplay.com, naniplay.nanime.in, naniplay.nanime.biz, sbembed.com, streamtape.com, streamsb.net, feurl.com, upload.ee, pixeldrain.com, racaty.net, 1fichier.com, 1drv.ms (Only works for file not folder or business account), uptobox.com and solidfiles.com
 ```
 -----
-## ⬇️ From Original Repos
+## ⬇️ From Base and other Repositories
 - *Mirroring direct download links, Torrent, and Telegram files to Google Drive*
 - *Mirroring Mega.nz links to Google Drive (If your Mega account not premium, it will limit 5GB/6 hours)*
 - *Copy files from someone's Drive to your Drive (Using Autorclone)*
@@ -234,7 +228,7 @@ uptobox.com (Uptobox account must be premium), solidfiles.com
 - *Extracting password protected files, using custom filename and download from password protected Index Links see these examples:*
 <p><a href="https://telegra.ph/Magneto-Python-Aria---Custom-Filename-Examples-01-20"> <img src="https://img.shields.io/badge/see%20on%20telegraph-grey?style=for-the-badge" width="190""/></a></p>
 
-- *Extract these filetypes and uploads to Google Drive*
+- *Extract these filetypes*
 ```
 ZIP, RAR, TAR, 7z, ISO, WIM, CAB, GZIP, BZIP2, 
 APM, ARJ, CHM, CPIO, CramFS, DEB, DMG, FAT, 
@@ -276,7 +270,21 @@ sudo pacman -S docker python
 pip3 install -r requirements-cli.txt
 ```
 -----
+## Bittorrent Seed
+
+- Add `d:ratio:time` perfix along with leech or mirror cmd.
+- Using `d` perfix alone will lead to use global options for aria2c or qbittorrent.
+
+### Qbittorrent
+- Global options: `MaxRatio` and `GlobalMaxSeedingMinutes` in qbittorrent.conf, `-1` means no limit, but you can cancel manually.
+  - **NOTE**: Don't change `MaxRatioAction`.
+
+### Aria2c
+- Global options: `--seed-ratio` (0 means no limit) and `--seed-time` (0 means no seed) in aria.sh.
+
+------
 ### ⬇️ Using Service Accounts for uploading to avoid user rate limit
+
 >For Service Account to work, you must set `USE_SERVICE_ACCOUNTS` = "True" in config file or environment variables.
 >**NOTE**: Using Service Accounts is only recommended while uploading to a Team Drive.
 
@@ -402,6 +410,7 @@ leechzipwatch - Leech yt-dlp support link as zip
 leechset - Leech settings
 setthumb - Set thumbnail
 status - Get Mirror Status message
+btsel - select files from torrent
 rsslist - List all subscribed rss feed info
 rssget - Get specific No. of links from specific rss feed
 rsssub - Subscribe new rss feed
