@@ -13,37 +13,77 @@
 ## By [Sparkxcloud](https://github.com/Spark-X-Cloud)
 -----
 ### ➡️ Spark-x-cloud mirrorbot main features :-
-```
-- Select files from Torrent before downloading using qbittorrent and aria2c.
-- Leech (splitting, thumbnail for each user, setting as document or as media for each user).
-- Stop duplicates for all tasks except yt-dlp tasks.
-- Leech/Zip/Unzip G-Drive links.
-- Counting files/folders from Google Drive link.
-- View Link button, extra button to open file index link in broswer instead of direct download.
-- Status Pages for unlimited tasks.
-- Clone status.
-- Search in multiple Drive folder/TeamDrive.
-- Recursive Search (only with `root` or TeamDrive ID, folder ids will be listed with non-recursive method).
-- Multi-TD list by token.pickle if exists.
-- Extract rar, zip and 7z splits with or without password.
-- Zip file/folder with or without password.
-- Use Token.pickle if file not found with Service Account for all Gdrive functions.
-- Random Service Account at startup.
-- Mirror/Leech/Watch/Clone/Count/Del by reply.
-- YT-DLP quality buttons.
-- Search on torrents with Torrent Search API or with variable plugins using qBittorrent search engine
-- - Docker image support for linux `amd64, arm64/v8, arm/v7, s390x`. (**Note**: Use `anasty17/mltb:arm64` for `arm64/v8` or oracle).
-- Update bot at startup and with restart command using `UPSTREAM_REPO`.
-- Bittorrent seed until reaching specific ratio or time.
-- Rss feed and filter. Based on this repository [rss-chan](https://github.com/hyPnOtICDo0g/rss-chan).
-- Save leech settings including thumbnails in database.
-- Mirror/Leech/Clone multi links/files with one command.
-- Extensions Filter for the files to be uploaded/cloned.
-- Incomplete task notifier to get incomplete task messages after restart, works with database.
-- Almost all repository functions have been improved.
-- Custom Name for all links except torrents. For files you should add extension except yt-dlp links.
-- Many bugs have been fixed.
-```
+
+***In each single file there is a major change from base code, it's almost totaly different. Here some of features and fixes that I remember.***
+### 🥀 qBittorrent
+- *Qbittorrent support*
+- *Select files from Torrent before and while downloading*
+- *Seed torrents to specific ratio and time*
+### 🥀 Aria2c
+- *Select files from Torrent before and while downloading*
+- *Seed torrents to specific ratio and time*
+- *Netrc support*
+- *Direct link authentication for specific link while using the bot (it will work even if only username or password)*
+- *Improve aria.sh*
+- *Fix all download listener functions and status*
+### 🥀 Leech
+- *Leech support*
+- *Splitting*
+- *Thumbnail for each user*
+- *Set upload as document or as media for each user*
+- *4GB file upload with premium account*
+### 🥀 Google
+- *Stop duplicates for all tasks except yt-dlp tasks*
+- *Download G-Drive links*
+- *Counting files/folders from Google Drive link*
+- *Search in multiple Drive folder/TeamDrive*
+- *Recursive Search (only with `root` or TeamDrive ID, folder ids will be listed with non-recursive method)*
+- *Use Token.pickle if file not found with Service Account, for all Gdrive functions*
+- *List result in html file instead of telegraph or telegram message to avoid limits by @junedkh*
+- *Random Service Account at startup*
+### 🥀 Status
+- *Clone Status*
+- *Extract Status*
+- *Archive Status*
+- *Seed Status*
+- *Status Pages for unlimited tasks*
+- *Ability to cancel upload/clone/archive/extract/split*
+- *Cancel all buttons for choosing specific tasks status to cancel*
+- *Fix flooding issues*
+- *Fix overall upload and download speed*
+### 🥀 Yt-dlp
+- *Switch from youtube-dl to yt-dlp and fix all conflicts*
+- *Yt-dlp quality buttons*
+- *Support for download live streams*
+- *Ability to use specific yt-dlp arg for each task*
+- *Fix download progress*
+### 🥀 Database
+- *SQL Database support*
+- *Save leech settings including thumbnails in database*
+- *Save sudo and authorized users*
+- *Incomplete task notifier to get incomplete task messages after restart*
+### 🥀 Torrents Search
+- *Torrent search support*
+- *Search on torrents with Torrent Search API*
+- *Search on torrents with variable plugins using qBittorrent search engine*
+### 🥀 Archives
+- *Zip instead of tar*
+- *Using 7-zip tool to extract all supported files*
+- *Extract rar, zip and 7z within folder or splits with or without password*
+- *Zip file/folder with or without password*
+### 🥀 RSS
+- *Rss feed. Based on this repository* [rss-chan](https://github.com/hyPnOtICDo0g/rss-chan)
+- *Filter added and all functions have been improved*
+### 🥀 Overall
+- *Docker image support for linux `amd64, arm64/v8, arm/v7, s390x`*
+- *Update bot at startup and with restart command using `UPSTREAM_REPO`*
+- *Mirror/Leech/Watch/Clone/Count/Del by reply*
+- *Mirror/Leech/Clone multi links/files with one command*
+- *Custom name for all links except torrents. For files you should add extension except yt-dlp links*
+- *Extensions Filter for the files to be uploaded/cloned*
+- *View Link button. Extra button to open index link in broswer instead of direct download for file*
+- *Almost all repository functions have been improved and many other details can't mention all of them*
+- *Many bugs have been fixed*
 -----
 ## Bot commands
 ### ➡️ Required Fields
@@ -83,7 +123,7 @@
 - `EQUAL_SPLITS`: *Split files larger than **LEECH_SPLIT_SIZE** into equal parts size (Not working with zip cmd). Default is `False`. `Bool`*
 - `CUSTOM_FILENAME`: *Add custom word to leeched file name.*
 -----
-### ➡️ qBittorrent
+### ➡️ qBittorrent/Aria2c
 - `BASE_URL_OF_BOT`: *Valid BASE URL where the bot is deployed to use qbittorrent web selection. Format of URL should be `http://myip`, where `myip` is the IP/Domain(public) of your bot or if you have chosen port other than `80` so write it in this format `http://myip:port` (`http` and not `https`). This Var is optional on VPS and required for Heroku specially to avoid app sleeping/idling. For Heroku fill `https://yourappname.herokuapp.com`. Still got idling? You can use http://cron-job.org to ping your Heroku app.*
 - `SERVER_PORT`: *Only For VPS even if `IS_VPS` is `False`, which is the **BASE_URL_OF_BOT** Port.*
 - `WEB_PINCODE`: *If empty or `False` means no more pincode required while qbit web selection. `Bool`*
@@ -156,7 +196,7 @@ javascript:(function () {
 - `STORAGE_THRESHOLD`: *To leave specific storage free and any download will lead to leave free storage less than this value will be cancelled. Don't add unit. Default unit is `GB`.*
 -----
 ### ⬇️ Buttons
-- `VIEW_LINK`: *View Link button to open file Index Link in browser instead of direct download link, you can figure out if it's compatible with your Index code or not, open any video from you Index and check if its URL ends with `?a=view`, if yes make it `True`, compatible with [BhadooIndex](https://gitlab.com/ParveenBhadooOfficial/Google-Drive-Index) Code. Default is `False`. `Bool`*
+- *`VIEW_LINK`: View Link button to open file Index Link in browser instead of direct download link, you can figure out if it's compatible with your Index code or not, open any video from you Index and check if its URL ends with `?a=view`. Compatible with [BhadooIndex](https://gitlab.com/ParveenBhadooOfficial/Google-Drive-Index) Code. Default is `False`. `Bool`*
 
 - *Three buttons are already added including Drive Link, Index Link, and View Link, you can add extra buttons, if you don't know what are the below entries, simply leave them empty.*
   - `BUTTON_FOUR_NAME`:
@@ -213,9 +253,8 @@ tgx, yts, eztv, torlock, rarbg
 ```
 -----
 ## ⬇️ From Base and other Repositories
-- *Mirroring direct download links, Torrent, and Telegram files to Google Drive*
-- *Mirroring Mega.nz links to Google Drive (If your Mega account not premium, it will limit 5GB/6 hours)*
-- *Copy files from someone's Drive to your Drive (Using Autorclone)*
+- *Mirror direct download links, Torrent, Mega.nz and Telegram files to Google Drive*
+- *Copy files from someone's Drive to your Drive*
 - *Download/Upload progress, Speeds and ETAs*
 - *Mirror all Youtube-dl supported links*
 - *Docker support*
@@ -389,33 +428,33 @@ python3 add_to_team_drive.py -d SharedTeamDriveSrcID
 ## ⬇️ Bot commands to be set in [@BotFather](https://t.me/BotFather)
 
 ```
-mirror - Mirror
-zipmirror - Mirror and upload as zip
-unzipmirror - Mirror and extract files
-qbmirror - Mirror torrent using qBittorrent
-qbzipmirror - Mirror torrent and upload as zip using qb
-qbunzipmirror - Mirror torrent and extract files using qb
-leech - Leech
-zipleech - Leech and upload as zip
-unzipleech - Leech and extract files
-qbleech - Leech torrent using qBittorrent
-qbzipleech - Leech torrent and upload as zip using qb
-qbunzipleech - Leech torrent and extract using qb
+mirror - or /m Mirror
+zipmirror - or /zm Mirror and upload as zip
+unzipmirror - or /uzm Mirror and extract files
+qbmirror - or /qm Mirror torrent using qBittorrent
+qbzipmirror - or /qzm Mirror torrent and upload as zip using qb
+qbunzipmirror - or /quzm Mirror torrent and extract files using qb
+leech - or /l Leech
+zipleech - or /zl Leech and upload as zip
+unzipleech - or /uzl Leech and extract files
+qbleech - or /ql Leech torrent using qBittorrent
+qbzipleech - or /qzl Leech torrent and upload as zip using qb
+qbunzipleech - or /quzl Leech torrent and extract using qb
 clone - Copy file/folder to Drive
 count - Count file/folder of Drive
-watch - Mirror yt-dlp supported link
-zipwatch - Mirror yt-dlp supported link as zip
-leechwatch - Leech through yt-dlp supported link
-leechzipwatch - Leech yt-dlp support link as zip
+ytdl - or /y Mirror yt-dlp supported link
+ytdlzip - or /yz Mirror yt-dlp supported link as zip
+ytdlleech - or /yl Leech through yt-dlp supported link
+ytdlzipleech - or /yzl Leech yt-dlp support link as zip
 leechset - Leech settings
 setthumb - Set thumbnail
 status - Get Mirror Status message
 btsel - select files from torrent
-rsslist - List all subscribed rss feed info
-rssget - Get specific No. of links from specific rss feed
-rsssub - Subscribe new rss feed
-rssunsub - Unsubscribe rss feed by title
-rssset - Rss Settings
+rsslist - or /rl List all subscribed rss feed info
+rssget - or /rg Get specific No. of links from specific rss feed
+rsssub - or /rs Subscribe new rss feed
+rssunsub - or /rus Unsubscribe rss feed by title
+rssset - or /rst Rss Settings
 list - Search files in Drive
 search - Search for torrents with API
 cancel - Cancel a task
@@ -428,6 +467,28 @@ stats - Bot Usage Stats
 ping - Ping the Bot
 help - All cmds with description
 ```
+------
+## ⬇️ UPSTREAM REPO (Recommended)
+
+- *`UPSTREAM_REPO` variable can be used for edit/add any file in repository.*
+- *You can add private/public repository link to grab/overwrite all files from it.*
+- *You can skip adding the privates files like token.pickle or accounts folder before deploying, also no need to add variables direct links except **config.env**, simply fill `UPSTREAM_REPO` private one in case you want to grab all files including private files.*
+- *If you added private files while deploying and you have added private `UPSTREAM_REPO` and your private files in this private repository, so your private files will be overwritten from this repository. Also if you are using URL variables like `TOKEN_PICKLE_URL` then all files from those variables will override the private files that added before deploying or from private `UPSTREAM_REPO`.*
+- *If you filled `UPSTREAM_REPO` with the official repository link, then be carefull incase any change in requirements.txt your bot will not start after restart. In this case you need to deploy again with updated code to install the new requirements or simply by changing the `UPSTREAM_REPO` to you fork link with that old updates.*
+- *In case you you filled `UPSTREAM_REPO` with your fork link be carefull also if you fetched the commits from the official repository.*
+- *The changes in your `UPSTREAM_REPO` will take affect only after restart.*
+- *`UPSTREAM_BRANCH` don't ever fill heroku here.*
+------
+## ⬇️ Bittorrent Seed
+- *Add `d:ratio:time` perfix along with leech or mirror cmd.*
+- *Using `d` perfix alone will lead to use global options for aria2c or qbittorrent.*
+
+### ⬇️ Qbittorrent
+- *Global options: `MaxRatio` and `GlobalMaxSeedingMinutes` in qbittorrent.conf, `-1` means no limit, but you can cancel manually.*
+  - ***NOTE***: *Don't change `MaxRatioAction`*.
+
+### ⬇️ Aria2c
+- *Global options: `--seed-ratio` (0 means no limit) and `--seed-time` (0 means no seed) in aria.sh.*
 ------
 
 ## ⬇️ Getting Google OAuth API credential file
