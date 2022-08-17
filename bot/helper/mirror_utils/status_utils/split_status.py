@@ -33,7 +33,7 @@ class SplitStatus:
 
     def processed_bytes(self):
         return 0
-    
+
     def download(self):
         return self
 

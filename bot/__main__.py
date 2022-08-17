@@ -2,15 +2,12 @@ from signal import signal, SIGINT
 from os import path as ospath, remove as osremove, execl as osexecl
 from subprocess import run as srun, check_output
 from psutil import disk_usage, cpu_percent, swap_memory, cpu_count, virtual_memory, net_io_counters, boot_time
-from datetime import datetime
 from time import time
-from pyrogram import idle
 from sys import executable
 from telegram import InlineKeyboardMarkup
 from telegram.ext import CommandHandler
-from telegram import ParseMode
 
-from bot import bot, app, dispatcher, updater, botStartTime, IGNORE_PENDING_REQUESTS, alive, LOGGER, Interval, rss_session, INCOMPLETE_TASK_NOTIFIER, DB_URI, app, main_loop
+from bot import bot, dispatcher, updater, botStartTime, IGNORE_PENDING_REQUESTS, LOGGER, Interval, INCOMPLETE_TASK_NOTIFIER, DB_URI, alive, app, main_loop, AUTHORIZED_CHATS
 from .helper.ext_utils.fs_utils import start_cleanup, clean_all, exit_clean_up
 from .helper.ext_utils.bot_utils import get_readable_file_size, get_readable_time
 from .helper.ext_utils.db_handler import DbManger
@@ -18,8 +15,8 @@ from .helper.telegram_helper.bot_commands import BotCommands
 from .helper.telegram_helper.message_utils import sendMessage, sendMarkup, editMessage, sendLogFile
 from .helper.telegram_helper.filters import CustomFilters
 from .helper.telegram_helper.button_build import ButtonMaker
-from .modules import authorize, list, cancel_mirror, mirror_status, mirror_leech, clone, ytdlp, shell, eval, delete, count, leech_settings, search, rss, bt_select
 
+from .modules import authorize, list, cancel_mirror, mirror_status, mirror_leech, clone, ytdlp, shell, eval, delete, count, leech_settings, search, rss, bt_select, sleep
 
 
 def stats(update, context):
@@ -46,22 +43,22 @@ def stats(update, context):
     mem_t = get_readable_file_size(memory.total)
     mem_a = get_readable_file_size(memory.available)
     mem_u = get_readable_file_size(memory.used)
-    stats = f'<b>⌈➳ 🛠 𝙲𝙾𝙼𝙼𝙸𝚃 𝙳𝙰𝚃𝙴🎄 :</b> {last_commit}\n\n'\
-            f'<b>⌈➳ 💝 𝙾𝙽𝙻𝙸𝙽𝙴 𝚃𝙸𝙼𝙴 ⌚ : </b> {currentTime}\n'\
-            f'<b>⌈➳ ☠️ 𝙾𝚂 𝚄𝙿𝚃𝙸𝙼𝙴 🧰 :</b> {osUptime}\n\n'\
-            f'<b>⌈➳ 📇 𝙳𝙸𝚂𝙺 𝚂𝙿𝙰𝙲𝙴 ☠️ :</b> {total}\n'\
-            f'<b>⌈➳ 🗃 𝙳𝙸𝚂𝙺 𝚂𝙿𝙰𝙲𝙴 𝚄𝚂𝙴𝙳 :</b> {used} | <b>⌈➳ 💌 𝙳𝙸𝚂𝙺 𝚂𝙿𝙰𝙲𝙴 𝙵𝚁𝙴𝙴 :</b> {free}\n\n'\
-            f'<b>⌈➳ 𝚄𝙿𝙻𝙾𝙰𝙳 𝙳𝙰𝚃𝙰 💞 ... ⇆⏫ :</b> {sent}\n'\
-            f'<b>⌈➳ 💃 𝙳𝙾𝚆𝙽𝙻𝙾𝙰𝙳 𝙳𝙰𝚃𝙰 💔 ... ⇆⏬ :</b> {recv}\n\n'\
-            f'<b>⌈➳ 🖥 𝙲𝙿𝚄 𝚄𝚂𝙰𝙶𝙴↹ :</b> {cpuUsage}%\n'\
-            f'<b>⌈➳ 🧭 𝚁𝙰𝙼 :</b> {mem_p}%\n'\
-            f'<b>⌈➳ 👸 𝙳𝙸𝚂𝙺 𝚄𝚂𝙴𝙳 :</b> {disk}%\n\n'\
-            f'<b>⌈➳ 💽 𝙿𝙷𝚈𝚂𝙸𝙲𝙰𝙻 𝙲𝙾𝚁𝙴𝚂 ⊫ :</b> {p_core}\n'\
-            f'<b>⌈➳ 🍥 𝚃𝙾𝚃𝙰𝙻 𝙲𝙾𝚁𝙴𝚂 𖣃 :</b> {t_core}\n\n'\
-            f'<b>⌈➳ ✳ 𝚂𝚆𝙰𝙿 :</b> {swap_t} | <b>⌈➳ 👸 𝙳𝙸𝚂𝙺 :</b> {swap_p}%\n'\
-            f'<b>⌈➳ ☁ 𝚃𝙾𝚃𝙰𝙻 𝙾𝙵 𝙼𝙴𝙼𝙾𝚁𝚈 => :</b> {mem_t}\n'\
-            f'<b>⌈➳ 💃 𝙵𝚁𝙴𝙴 𝙾𝙵 𝙼𝙴𝙼𝙾𝚁𝚈 :</b> {mem_a}\n'\
-            f'<b>⌈➳ 👰 𝚄𝚂𝙰𝙶𝙴 𝙾𝙵 𝙼𝙴𝙼𝙾𝚁𝚈 :</b> {mem_u}\n'
+    stats = f'<b>🛠 𝙲ᴏᴍᴍɪᴛ ᴅᴀᴛᴇ :</b> {last_commit}\n\n'\
+            f'<b>💝 𝙾ɴʟɪɴᴇ ᴛɪᴍᴇ : </b> {currentTime}\n'\
+            f'<b>☠️ 𝙾s ᴜᴘᴛɪᴍᴇ :</b> {osUptime}\n\n'\
+            f'<b>📇 Tᴏᴛᴀʟ ᴅɪsᴋ sᴘᴀᴄᴇ :</b> {total}\n'\
+            f'<b>🗃 𝙳ɪsᴋ sᴘᴀᴄᴇ ᴜsᴇᴅ :</b> {used} | <b>💌 𝙳ɪsᴋ sᴘᴀᴄᴇ ғʀᴇᴇ :</b> {free}\n\n'\
+            f'<b>☠️ 𝚄ᴘʟᴏᴀᴅ ᴅᴀᴛᴀ :</b> {sent}\n'\
+            f'<b>💃 𝙳ᴏᴡɴʟᴏᴀᴅ ᴅᴀᴛᴀ :</b> {recv}\n\n'\
+            f'<b>🖥 𝙲ᴘᴜ ᴜsᴜᴀɢᴇ :</b> {cpuUsage}%\n'\
+            f'<b>🧭 𝚁ᴀᴍ :</b> {mem_p}%\n'\
+            f'<b>👸 𝙳ɪsᴋ ᴜsᴇᴅ :</b> {disk}%\n\n'\
+            f'<b>💽 𝙿ʜʏsɪᴄᴀʟ ᴄᴏʀᴇs :</b> {p_core}\n'\
+            f'<b>🍥 𝚃otal Cores :</b> {t_core}\n\n'\
+            f'<b>✳ 𝚂ᴡᴀᴘ :</b> {swap_t} | <b>👸 𝙳ɪsᴋ :</b> {swap_p}%\n'\
+            f'<b>☁ 𝚃ᴏᴛᴀʟ ᴏғ ᴍᴇᴏᴍᴏʀʏ :</b> {mem_t}\n'\
+            f'<b>💃 𝙵ʀᴇᴇ ᴏғ ᴍᴇᴍᴏʀʏ :</b> {mem_a}\n'\
+            f'<b>👰 𝚄sᴀɢᴇ ᴏғ ᴍᴇᴍᴏʀʏ :</b> {mem_u}\n'
     sendMessage(stats, context.bot, update.message)
 
 
@@ -81,15 +78,15 @@ Type /{BotCommands.HelpCommand} to get a list of available commands
         sendMarkup(f"Oops! not an Authorized user.\nPlease deploy your own <b>SparkXcloud-Gdrive-MirrorBot</b>.", context.bot, update, reply_markup)
 
 def restart(update, context):
-    restart_message = sendMessage("Restarting, Please wait!..👻👻", context.bot, update.message)
+    restart_message = sendMessage("Restarting...", context.bot, update.message)
     if Interval:
         Interval[0].cancel()
         Interval.clear()
+    alive.kill()
     clean_all()
-    srun(["pkill", "-f", "gunicorn|aria2c|qbittorrent-nox"])
+    srun(["pkill", "-9", "-f", "gunicorn|extra-api|last-api|megasdkrest"])
     srun(["python3", "update.py"])
-    srun(["python3", "update.py"])
-    with open(".restartmsg", "w") as f: 
+    with open(".restartmsg", "w") as f:
         f.truncate(0)
         f.write(f"{restart_message.chat.id}\n{restart_message.message_id}\n")
     osexecl(executable, executable, "-m", "bot")
@@ -97,9 +94,9 @@ def restart(update, context):
 
 def ping(update, context):
     start_time = int(round(time() * 1000))
-    reply = sendMessage("Starting_Ping ☠️", context.bot, update.message)
+    reply = sendMessage("☠️ 𝐒𝐭𝐚𝐫𝐭𝐢𝐧𝐠 𝐏𝐢𝐧𝐠", context.bot, update.message)
     end_time = int(round(time() * 1000))
-    editMessage(f'{end_time - start_time} 𝙿𝙸𝙽𝙶 𝚄𝙿𝙳𝙰𝚃𝙴 𝙸𝚗𝚏𝚘 => 𝙼𝚂 🔥', reply)
+    editMessage(f'{end_time - start_time} ms', reply)
 
 
 def log(update, context):
@@ -147,6 +144,7 @@ NOTE: Try each command without any perfix to see more detalis.
 /{BotCommands.AddSudoCommand}: Add sudo user (Only Owner).
 /{BotCommands.RmSudoCommand}: Remove sudo users (Only Owner).
 /{BotCommands.RestartCommand}: Restart and update the bot (Only Owner & Sudo).
+/{BotCommands.SleepCommand}: idle the bot (Only Owner & Sudo).
 /{BotCommands.LogCommand}: Get a log file of the bot. Handy for getting crash reports (Only Owner & Sudo).
 /{BotCommands.ShellCommand}: Run shell commands (Only Owner).
 /{BotCommands.EvalCommand}: Run Python Code Line | Lines (Only Owner).
@@ -155,38 +153,36 @@ NOTE: Try each command without any perfix to see more detalis.
 '''
 
 def bot_help(update, context):
-    button = ButtonMaker()
-    button.buildbutton("📝 ᴄᴍᴅ-ɪɴғᴏ ", f"https://telegra.ph/{help}")
-    reply_markup = InlineKeyboardMarkup(button.build_menu(1))
-    sendMarkup(help_string, context.bot, update.message, reply_markup)
+    sendMessage(help_string, context.bot, update.message)
 
 def main():
     start_cleanup()
+    notifier_dict = False
     if INCOMPLETE_TASK_NOTIFIER and DB_URI is not None:
         if notifier_dict := DbManger().get_incomplete_tasks():
             for cid, data in notifier_dict.items():
                 if ospath.isfile(".restartmsg"):
                     with open(".restartmsg") as f:
                         chat_id, msg_id = map(int, f)
-                    msg = '😎Restarted successfully❗'
+                    msg = '😎 𝐑𝐞𝐬𝐭𝐚𝐫𝐭𝐞𝐝 𝐬𝐮𝐜𝐜𝐞𝐬𝐬𝐟𝐮𝐥𝐥𝐲❗'
                 else:
-                    msg = 'Bot Restarted!'
+                    msg = '𝐁𝐨𝐭 𝐑𝐞𝐬𝐭𝐚𝐫𝐭𝐞𝐝!'
                 for tag, links in data.items():
                      msg += f"\n\n{tag}: "
                      for index, link in enumerate(links, start=1):
                          msg += f" <a href='{link}'>{index}</a> |"
                          if len(msg.encode()) > 4000:
-                             if '😎Restarted successfully❗' in msg and cid == chat_id:
-                                 bot.editMessageText(msg, chat_id, msg_id, parse_mode='HTMl', disable_web_page_preview=True)
+                             if 'Restarted Successfully!' in msg and cid == chat_id:
+                                 bot.editMessageText(msg, chat_id, msg_id, parse_mode='HTML', disable_web_page_preview=True)
                                  osremove(".restartmsg")
                              else:
-                                try:
-                                    bot.sendMessage(cid, msg, 'HTML', disable_web_page_preview=True)
-                                except Exception as e:
-                                    LOGGER.error(e)
+                                 try:
+                                     bot.sendMessage(cid, msg, 'HTML', disable_web_page_preview=True)
+                                 except Exception as e:
+                                     LOGGER.error(e)
                              msg = ''
-                if '😎Restarted successfully❗' in msg and cid == chat_id:
-                     bot.editMessageText(msg, chat_id, msg_id, parse_mode='HTMl', disable_web_page_preview=True)
+                if 'Restarted Successfully!' in msg and cid == chat_id:
+                     bot.editMessageText(msg, chat_id, msg_id, parse_mode='HTML', disable_web_page_preview=True)
                      osremove(".restartmsg")
                 else:
                     try:
@@ -197,8 +193,14 @@ def main():
     if ospath.isfile(".restartmsg"):
         with open(".restartmsg") as f:
             chat_id, msg_id = map(int, f)
-        bot.edit_message_text("😎Restarted successfully❗", chat_id, msg_id)
+        bot.edit_message_text("😎 𝐑𝐞𝐬𝐭𝐚𝐫𝐭𝐞𝐝 𝐬𝐮𝐜𝐜𝐞𝐬𝐬𝐟𝐮𝐥𝐥𝐲❗", chat_id, msg_id)
         osremove(".restartmsg")
+    elif not notifier_dict and AUTHORIZED_CHATS:
+        for id_ in AUTHORIZED_CHATS:
+            try:
+                bot.sendMessage(id_, "𝐁𝐨𝐭 𝐑𝐞𝐬𝐭𝐚𝐫𝐭𝐞𝐝!", 'HTML')
+            except Exception as e:
+                LOGGER.error(e)
 
     start_handler = CommandHandler(BotCommands.StartCommand, start, run_async=True)
     ping_handler = CommandHandler(BotCommands.PingCommand, ping,

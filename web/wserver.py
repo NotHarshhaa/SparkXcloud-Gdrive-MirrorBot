@@ -8,13 +8,13 @@ from web.nodes import make_tree
 
 app = Flask(__name__)
 
+aria2 = ariaAPI(ariaClient(host="http://localhost", port=6800, secret=""))
+
 basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                     handlers=[FileHandler('log.txt'), StreamHandler()],
                     level=INFO)
 
 LOGGER = getLogger(__name__)
-
-aria2 = ariaAPI(ariaClient(host="http://localhost", port=6800, secret=""))
 
 page = """
 <html lang="en">
@@ -201,13 +201,13 @@ function s_validate() {
           src="https://telegra.ph/file/43af672249c94053356c7.jpg"
           alt="logo"
         />
-        <a href="https://t.me/SparkXcloud">
+        <a href="https://t.me/anas_tayyar">
           <h2 class="name">Bittorrent Selection</h2>
         </a>
       </div>
       <div class="social">
-        <a href="https://www.github.com/Spark-X-Cloud/SparkXcloud-Gdrive-MirrorBot"><i class="fab fa-github"></i></a>
-        <a href="https://t.me/SparkXcloud"><i class="fab fa-telegram"></i></a>
+        <a href="https://www.github.com/anasty17/mirror-leech-telegram-bot"><i class="fab fa-github"></i></a>
+        <a href="https://t.me/anas_tayyar"><i class="fab fa-telegram"></i></a>
       </div>
     </header>
     <div id="sticks">
@@ -562,13 +562,13 @@ section span{
           src="https://telegra.ph/file/43af672249c94053356c7.jpg"
           alt="logo"
         />
-        <a href="https://t.me/SparkXcloud">
+        <a href="https://t.me/anas_tayyar">
           <h2 class="name">Bittorrent Selection</h2>
         </a>
       </div>
       <div class="social">
-        <a href="https://www.github.com/Spark-X-Cloud/SparkXcloud-Gdrive-MirrorBot"><i class="fab fa-github"></i></a>
-        <a href="https://t.me/SparkXcloud"><i class="fab fa-telegram"></i></a>
+        <a href="https://www.github.com/anasty17/mirror-leech-telegram-bot"><i class="fab fa-github"></i></a>
+        <a href="https://t.me/anas_tayyar"><i class="fab fa-telegram"></i></a>
       </div>
     </header>
     <section>
@@ -599,7 +599,7 @@ def re_verfiy(paused, resumed, client, hash_id):
         paused = paused.split("|")
     if resumed:
         resumed = resumed.split("|")
-        
+
     k = 0
     while True:
         res = client.torrents_files(torrent_hash=hash_id)
@@ -717,11 +717,11 @@ def set_priority(id_):
 
 @app.route('/')
 def homepage():
-    return "<h1>See SparkXcloud-Gdrive-MirrorBot <a href='https://www.github.com/Spark-X-Cloud/SparkXcloud-Gdrive-MirrorBot'>@GitHub</a> By <a href='https://github.com/Spark-X-Cloud'>Anas</a></h1>"
+    return "<h1>See mirror-leech-telegram-bot <a href='https://www.github.com/anasty17/mirror-leech-telegram-bot'>@GitHub</a> By <a href='https://github.com/anasty17'>Anas</a></h1>"
 
 @app.errorhandler(Exception)
 def page_not_found(e):
-    return f"<h1>404: Torrent not found! Mostly wrong. <br><br>Error: {e}input</h2>", 404
+    return f"<h1>404: Torrent not found! Mostly wrong input. <br><br>Error: {e}</h2>", 404
 
 if __name__ == "__main__":
     app.run()

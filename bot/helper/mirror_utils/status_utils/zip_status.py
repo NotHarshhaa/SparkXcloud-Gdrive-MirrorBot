@@ -31,7 +31,7 @@ class ZipStatus:
         return f'{round(self.progress_raw(), 2)}%'
 
     def speed(self):
-        return '0'
+        return f'{get_readable_file_size(self.speed_raw())}/s'
 
     def name(self):
         return self.__name

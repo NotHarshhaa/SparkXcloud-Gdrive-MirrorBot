@@ -6,6 +6,7 @@ DOWNLOAD_DIR = environ.get('DOWNLOAD_DIR')
 if not DOWNLOAD_DIR.endswith("/"):
     DOWNLOAD_DIR = DOWNLOAD_DIR + '/'
 
+
 class TorNode(NodeMixin):
     def __init__(self, name, is_folder=False, is_file=False, parent=None, size=None, priority=None, file_id=None):
         super().__init__()
@@ -104,4 +105,4 @@ def create_list(par, msg):
 
     if par.name != ".unwanted":
         msg[0] += "</ul>"
-    return msg    
+    return msg

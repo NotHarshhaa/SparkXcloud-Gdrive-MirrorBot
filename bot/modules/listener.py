@@ -26,7 +26,7 @@ class MirrorLeechListener:
     def __init__(self, bot, message, isZip=False, extract=False, isQbit=False, isLeech=False, pswd=None, tag=None, select=False, seed=False):
         self.bot = bot
         self.message = message
-        self.uid = self.message.message_id
+        self.uid = message.message_id
         self.extract = extract
         self.isZip = isZip
         self.isQbit = isQbit
@@ -37,7 +37,7 @@ class MirrorLeechListener:
         self.newDir = ""
         self.dir = f"{DOWNLOAD_DIR}{self.uid}"
         self.select = select
-        self.isPrivate = self.message.chat.type in ['private', 'group']
+        self.isPrivate = message.chat.type in ['private', 'group']
         self.suproc = None
 
     def clean(self):
@@ -100,18 +100,20 @@ class MirrorLeechListener:
                     if self.seed:
                         self.newDir = f"{self.dir}10000"
                         path = f"{self.newDir}/{name}"
+                    else:
+                        path = m_path
                     for dirpath, subdir, files in walk(m_path, topdown=False):
                         for file_ in files:
                             if re_search(r'\.part0*1\.rar$|\.7z\.0*1$|\.zip\.0*1$|\.zip$|\.7z$|^.(?!.*\.part\d+\.rar)(?=.*\.rar$)', file_):
-                                m_path = ospath.join(dirpath, file_)
+                                f_path = ospath.join(dirpath, file_)
                                 if self.seed:
                                     t_path = dirpath.replace(self.dir, self.newDir)
                                 else:
                                     t_path = dirpath
                                 if self.pswd is not None:
-                                    self.suproc = Popen(["7z", "x", f"-p{self.pswd}", m_path, f"-o{t_path}", "-aot"])
+                                    self.suproc = Popen(["7z", "x", f"-p{self.pswd}", f_path, f"-o{t_path}", "-aot"])
                                 else:
-                                    self.suproc = Popen(["7z", "x", m_path, f"-o{t_path}", "-aot"])
+                                    self.suproc = Popen(["7z", "x", f_path, f"-o{t_path}", "-aot"])
                                 self.suproc.wait()
                                 if self.suproc.returncode == -9:
                                     return
@@ -214,9 +216,9 @@ class MirrorLeechListener:
     def onUploadComplete(self, link: str, size, files, folders, typ, name):
         if not self.isPrivate and INCOMPLETE_TASK_NOTIFIER and DB_URI is not None:
             DbManger().rm_complete_task(self.message.link)
-        msg = f"<b>⌈➳ 💌 𝙵𝙸𝙻𝙴𝙽𝙰𝙼𝙴 ♻ : </b><code>{escape(name)}</code>\n\n<b>⌈➳ 📦 𝚂𝙸𝚉𝙴 : </b>{size}"
+        msg = f"<b>Name: </b><code>{escape(name)}</code>\n\n<b>Size: </b>{size}"
         if self.isLeech:
-            msg += f'\n<b>⌈➳ 🗂 𝚃𝙾𝚃𝙰𝙻 𝙵𝙸𝙻𝙴𝚂 =>: </b>{folders}'
+            msg += f'\n<b>Total Files: </b>{folders}'
             if typ != 0:
                 msg += f'\n<b>Corrupted Files: </b>{typ}'
             msg += f'\n<b>cc: </b>{self.tag}\n\n'
@@ -237,25 +239,25 @@ class MirrorLeechListener:
                     clean_target(self.newDir)
                 return
         else:
-            msg += f'\n\n<b>⌈➳ ♻ 𝚃𝚈𝙿𝙴 : </b>{typ}'
+            msg += f'\n\n<b>Type: </b>{typ}'
             if typ == "Folder":
-                msg += f'\n<b>⌈➳ 📚 𝚂𝚄𝙱-𝙵𝙾𝙻𝙳𝙴𝚁𝚂 : </b>{folders}'
-                msg += f'\n<b>⌈➳ 🗂 𝚃𝙾𝚃𝙰𝙻 𝙵𝙸𝙻𝙴𝚂 =>: </b>{files}'
+                msg += f'\n<b>SubFolders: </b>{folders}'
+                msg += f'\n<b>Files: </b>{files}'
             msg += f'\n\n<b>cc: </b>{self.tag}'
             buttons = ButtonMaker()
-            buttons.buildbutton("🌩 𝙳𝚁𝙸𝚅𝙴-𝙻𝙸𝙽𝙺 🌩", link)
+            buttons.buildbutton("☁️ Drive Link", link)
             LOGGER.info(f'Done Uploading {name}')
             if INDEX_URL is not None:
                 url_path = rutils.quote(f'{name}')
                 share_url = f'{INDEX_URL}/{url_path}'
                 if typ == "Folder":
                     share_url += '/'
-                    buttons.buildbutton("⚡ 𝙸𝙽𝙳𝙴𝚇-𝙻𝙸𝙽𝙺 🔰", share_url)
+                    buttons.buildbutton("⚡ Index Link", share_url)
                 else:
-                    buttons.buildbutton("⚡ 𝙸𝙽𝙳𝙴𝚇-𝙻𝙸𝙽𝙺 🔰", share_url)
+                    buttons.buildbutton("⚡ Index Link", share_url)
                     if VIEW_LINK:
                         share_urls = f'{INDEX_URL}/{url_path}?a=view'
-                        buttons.buildbutton("✅ 𝚅𝙸𝙴𝚆-𝙻𝙸𝙽𝙺 💝", share_urls)
+                        buttons.buildbutton("🌐 View Link", share_urls)
             sendMarkup(msg, self.bot, self.message, InlineKeyboardMarkup(buttons.build_menu(2)))
             if self.seed:
                 if self.isZip:

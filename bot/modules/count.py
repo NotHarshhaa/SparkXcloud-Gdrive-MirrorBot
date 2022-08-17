@@ -9,7 +9,6 @@ from bot.helper.ext_utils.bot_utils import is_gdrive_link, new_thread
 
 @new_thread
 def countNode(update, context):
-    args = update.message.text.split(" ", maxsplit=1)
     reply_to = update.message.reply_to_message
     link = ''
     if len(context.args) == 1:

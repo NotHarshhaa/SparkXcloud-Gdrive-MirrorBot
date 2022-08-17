@@ -26,12 +26,12 @@ class ExtractStatus:
             return self.processed_bytes() / self.__size * 100
         except:
             return 0
-        
+
     def progress(self):
-        return f'{get_readable_file_size(self.speed_raw())}/s'
+        return f'{round(self.progress_raw(), 2)}%'
 
     def speed(self):
-        return '0'
+        return f'{get_readable_file_size(self.speed_raw())}/s'
 
     def name(self):
         return self.__name

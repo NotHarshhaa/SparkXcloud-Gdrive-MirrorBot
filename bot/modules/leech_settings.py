@@ -4,7 +4,7 @@ from PIL import Image
 from telegram.ext import CommandHandler, CallbackQueryHandler
 from telegram import InlineKeyboardMarkup
 
-from bot import AS_DOC_USERS, AS_MEDIA_USERS, dispatcher, AS_DOCUMENT, app, AUTO_DELETE_MESSAGE_DURATION, DB_URI
+from bot import AS_DOC_USERS, AS_MEDIA_USERS, dispatcher, AS_DOCUMENT, AUTO_DELETE_MESSAGE_DURATION, DB_URI
 from bot.helper.telegram_helper.message_utils import sendMessage, sendMarkup, editMessage, auto_delete_message
 from bot.helper.telegram_helper.filters import CustomFilters
 from bot.helper.telegram_helper.bot_commands import BotCommands
@@ -40,7 +40,7 @@ def getleechinfo(from_user):
     button = InlineKeyboardMarkup(buttons.build_menu(1))
 
     text = f"<u>𝐋𝐞𝐞𝐜𝐡 𝐒𝐞𝐭𝐭𝐢𝐧𝐠𝐬 𝐟𝐨𝐫 <a href='tg://user?id={user_id}'>{name}</a></u>\n"\
-           f"𝐋𝐞𝐞𝐜𝐡 𝐓𝐲𝐩𝐞<b>{ltype}</b>\n"\
+           f"𝐋𝐞𝐞𝐜𝐡 𝐓𝐲𝐩𝐞 <b>{ltype}</b>\n"\
            f"𝐂𝐮𝐬𝐭𝐨𝐦 𝐓𝐡𝐮𝐦𝐛𝐧𝐚𝐢𝐥 <b>{thumbmsg}</b>"
     return text, button
 
@@ -102,8 +102,7 @@ def setThumb(update, context):
         path = "Thumbnails/"
         if not ospath.isdir(path):
             mkdir(path)
-        photo_msg = app.get_messages(update.message.chat.id, reply_to_message_ids=update.message.message_id)
-        photo_dir = app.download_media(photo_msg, file_name=path)
+        photo_dir = reply_to.photo[-1].get_file().download()
         des_dir = ospath.join(path, f'{user_id}.jpg')
         Image.open(photo_dir).convert("RGB").save(des_dir, "JPEG")
         osremove(photo_dir)
@@ -112,7 +111,7 @@ def setThumb(update, context):
         msg = f"𝐂𝐮𝐬𝐭𝐨𝐦 𝐭𝐡𝐮𝐦𝐛𝐧𝐚𝐢𝐥 𝐬𝐚𝐯𝐞𝐝 𝐟𝐨𝐫 {update.message.from_user.mention_html(update.message.from_user.first_name)}."
         sendMessage(msg, context.bot, update.message)
     else:
-        sendMessage("𝐑𝐞𝐩𝐥𝐲 𝐭𝐨 𝐚 𝐩𝐡𝐨𝐭𝐨 𝐭𝐨 𝐬𝐚𝐯𝐞 𝐜𝐮𝐬𝐭𝐨𝐦 𝐭𝐡𝐮𝐦𝐛𝐧𝐚𝐢𝐥.", context.bot, update.message)
+        sendMessage("𝐑𝐞𝐩𝐥𝐲 𝐭𝐨 𝐚 𝐩𝐡𝐨𝐭𝐨 𝐭𝐨 𝐬𝐚𝐯𝐞 𝐜𝐮𝐬𝐭𝐨𝐦 𝐭𝐡𝐮𝐦𝐛𝐧𝐚𝐢𝐥", context.bot, update.message)
 
 leech_set_handler = CommandHandler(BotCommands.LeechSetCommand, leechSet, filters=CustomFilters.authorized_chat | CustomFilters.authorized_user, run_async=True)
 set_thumbnail_handler = CommandHandler(BotCommands.SetThumbCommand, setThumb, filters=CustomFilters.authorized_chat | CustomFilters.authorized_user, run_async=True)

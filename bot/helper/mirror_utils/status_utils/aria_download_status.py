@@ -17,7 +17,7 @@ class AriaDownloadStatus:
         self.__download = get_download(gid)
         self.__listener = listener
         self.start_time = 0
-        self.message = listener.message   
+        self.message = listener.message
 
     def __update(self):
         self.__download = self.__download.live
