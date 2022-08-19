@@ -4,7 +4,6 @@ from time import sleep
 from os import path as ospath, remove as osremove, listdir, walk
 from subprocess import Popen
 from html import escape
-from telegram import InlineKeyboardMarkup
 
 from bot import Interval, INDEX_URL, VIEW_LINK, aria2, DOWNLOAD_DIR, download_dict, download_dict_lock, \
                 LEECH_SPLIT_SIZE, LOGGER, DB_URI, INCOMPLETE_TASK_NOTIFIER, MAX_SPLIT_SIZE
@@ -216,11 +215,11 @@ class MirrorLeechListener:
     def onUploadComplete(self, link: str, size, files, folders, typ, name):
         if not self.isPrivate and INCOMPLETE_TASK_NOTIFIER and DB_URI is not None:
             DbManger().rm_complete_task(self.message.link)
-        msg = f"<b>Name: </b><code>{escape(name)}</code>\n\n<b>Size: </b>{size}"
+        msg = f"<b>╭─🗂️ Fɪʟᴇɴᴀᴍᴇ: </b><code>{escape(name)}</code>\n\n<b>├─📦 Sɪᴢᴇ: </b>{size}"
         if self.isLeech:
-            msg += f'\n<b>Total Files: </b>{folders}'
+            msg += f'\n<b>├─📁 Tᴏᴛᴀʟ ғɪʟᴇs: </b>{folders}'
             if typ != 0:
-                msg += f'\n<b>Corrupted Files: </b>{typ}'
+                msg += f'\n<b>├─📛 Cᴏʀʀᴜᴘᴛᴇᴅ ғɪʟᴇs: </b>{typ}'
             msg += f'\n<b>cc: </b>{self.tag}\n\n'
             if not files:
                 sendMessage(msg, self.bot, self.message)
@@ -239,26 +238,26 @@ class MirrorLeechListener:
                     clean_target(self.newDir)
                 return
         else:
-            msg += f'\n\n<b>Type: </b>{typ}'
+            msg += f'\n\n<b>├─⚙️ Tʏᴘᴇ: </b>{typ}'
             if typ == "Folder":
-                msg += f'\n<b>SubFolders: </b>{folders}'
-                msg += f'\n<b>Files: </b>{files}'
+                msg += f'\n<b>├─📚 Sᴜʙꜰᴏʟᴅᴇʀꜱ: </b>{folders}'
+                msg += f'\n<b>╰─📁 Fɪʟᴇꜱ: </b>{files}'
             msg += f'\n\n<b>cc: </b>{self.tag}'
             buttons = ButtonMaker()
-            buttons.buildbutton("☁️ Drive Link", link)
+            buttons.buildbutton("☁️ Dʀɪᴠᴇ Lɪɴᴋ ☁️", link)
             LOGGER.info(f'Done Uploading {name}')
             if INDEX_URL is not None:
                 url_path = rutils.quote(f'{name}')
                 share_url = f'{INDEX_URL}/{url_path}'
                 if typ == "Folder":
                     share_url += '/'
-                    buttons.buildbutton("⚡ Index Link", share_url)
+                    buttons.buildbutton("💡 Iɴᴅᴇx Lɪɴᴋ 💡", share_url)
                 else:
-                    buttons.buildbutton("⚡ Index Link", share_url)
+                    buttons.buildbutton("💡 Iɴᴅᴇx Lɪɴᴋ 💡", share_url)
                     if VIEW_LINK:
                         share_urls = f'{INDEX_URL}/{url_path}?a=view'
-                        buttons.buildbutton("🌐 View Link", share_urls)
-            sendMarkup(msg, self.bot, self.message, InlineKeyboardMarkup(buttons.build_menu(2)))
+                        buttons.buildbutton("📖 Vɪᴇᴡ Lɪɴᴋ 📖", share_urls)
+            sendMarkup(msg, self.bot, self.message, buttons.build_menu(2))
             if self.seed:
                 if self.isZip:
                     clean_target(f"{self.dir}/{name}")
