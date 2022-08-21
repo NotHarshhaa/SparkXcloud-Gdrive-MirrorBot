@@ -1,8 +1,6 @@
 anytree
-appdirs
 asyncio
 aria2p
-attrdict
 beautifulsoup4
 bencoding
 cfscrape
@@ -18,15 +16,17 @@ pillow
 psutil
 psycopg2-binary
 pybase64
+pycryptodomex
 pyrogram
 python-dotenv
 python-magic
 python-telegram-bot
 qbittorrent-api
 requests
+SecretStorage
 six
 tenacity
 tgCrypto
-urllib3
+xattr
 yt-dlp
 heroku3

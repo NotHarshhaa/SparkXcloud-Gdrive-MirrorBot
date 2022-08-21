@@ -117,7 +117,7 @@
 - `UPSTREAM_BRANCH`: *Upstream branch for update. Default is `master`.*
 -----
 ### ➡️ Leech
-- `USER_SESSION_STRING`: *To download/upload from your telegram account. To generate session string use this command `python3 generate_string_session.py` after mounting repo folder for sure.* ***NOTE***: *You can't use bot with private message, use it with supergroup or channel.*
+- `USER_SESSION_STRING`: *To download/upload from your telegram account. If you own premium account. To generate session string use this command `python3 generate_string_session.py` after mounting repo folder for sure.* ***NOTE***: *You can't use bot with private message, use it with supergroup or channel.*
 - `LEECH_SPLIT_SIZE`: *Size of split in bytes. Default is `2GB`. Default is `4GB` if your account is premium.*
 - `AS_DOCUMENT`: *Default type of Telegram file upload. Default is `False` mean as media. `Bool`*
 - `EQUAL_SPLITS`: *Split files larger than **LEECH_SPLIT_SIZE** into equal parts size (Not working with zip cmd). Default is `False`. `Bool`*

@@ -1,6 +1,5 @@
 from threading import Thread
 from telegram.ext import CommandHandler, CallbackQueryHandler
-from telegram import InlineKeyboardMarkup
 from time import sleep
 from re import split as re_split
 
@@ -72,15 +71,21 @@ def _ytdl(bot, message, isZip=False, isLeech=False):
             tag = reply_to.from_user.mention_html(reply_to.from_user.first_name)
 
     if not is_url(link):
-        help_msg = "<b>Send link along with command line:</b>"
-        help_msg += "\n<code>/command</code> {link} |newname pswd: mypassword [zip] args: x:y|x1:y1"
-        help_msg += "\n\n<b>By replying to link:</b>"
-        help_msg += "\n<code>/command</code> |newname pswd: mypassword [zip] args: x:y|x1:y1"
-        help_msg += "\n\n<b>Args Example:</b> args: playliststart:^10|matchtitle:S13|writesubtitles:true"
-        help_msg += "\n\n<b>NOTE:</b> Add `^` before integer, some values must be integer and some string."
-        help_msg += " Like playlist_items:10 works with string, so no need to add `^` before the number"
-        help_msg += " but playlistend works only with integer so you must add `^` before the number like example above."
-        help_msg += "\n\nCheck all arguments from this <a href='https://github.com/yt-dlp/yt-dlp/blob/master/yt_dlp/YoutubeDL.py#L178'>FILE</a>."
+        help_msg = """
+<b>Send link along with command line:</b>
+<code>/command</code> {link} |newname pswd: mypassword [zip] args: x:y|x1:y1
+
+<b>By replying to link:</b>
+<code>/command</code> |newname pswd: mypassword [zip] args: x:y|x1:y1
+
+<b>Args Example:</b> args: playliststart:^10|matchtitle:S13|writesubtitles:true|live_from_start:true|postprocessor_args:{"ffmpeg": ["-threads", "4"]}|wait_for_video:(5, 100)
+
+<b>Args Note:</b> Add `^` before integer, some values must be integer and some string.
+Like playlist_items:10 works with string, so no need to add `^` before the number but playlistend works only with integer so you must add `^` before the number like example above.
+You can add tuple and dict also. Use double quotes inside dict. Also you can add format manually, whatever what quality button you have pressed.
+
+Check all arguments from this <a href='https://github.com/yt-dlp/yt-dlp/blob/master/yt_dlp/YoutubeDL.py#L178'>FILE</a>.
+        """
         return sendMessage(help_msg, bot, message)
 
     listener = MirrorLeechListener(bot, message, isZip, isLeech=isLeech, pswd=pswd, tag=tag)
@@ -95,15 +100,15 @@ def _ytdl(bot, message, isZip=False, isLeech=False):
         return sendMessage(tag + " " + msg, bot, message)
     if 'entries' in result:
         for i in ['144', '240', '360', '480', '720', '1080', '1440', '2160']:
-            video_format = f"bv*[height<=?{i}][ext=mp4]"
+            video_format = f"bv*[height<=?{i}][ext=mp4]+ba/b[height<=?{i}]"
             buttons.sbutton(f"{i}-mp4", f"qu {msg_id} {video_format} t")
-            video_format = f"bv*[height<=?{i}][ext=webm]"
+            video_format = f"bv*[height<=?{i}][ext=webm]+ba/b[height<=?{i}]"
             buttons.sbutton(f"{i}-webm", f"qu {msg_id} {video_format} t")
         buttons.sbutton("MP3", f"qu {msg_id} mp3 t")
         buttons.sbutton("Best Videos", f"qu {msg_id} {best_video} t")
         buttons.sbutton("Best Audios", f"qu {msg_id} {best_audio} t")
         buttons.sbutton("Cancel", f"qu {msg_id} cancel")
-        YTBUTTONS = InlineKeyboardMarkup(buttons.build_menu(3))
+        YTBUTTONS = buttons.build_menu(3)
         listener_dict[msg_id] = [listener, user_id, link, name, YTBUTTONS, args]
         bmsg = sendMarkup('Choose Playlist Videos Quality:', bot, message, YTBUTTONS)
     else:
@@ -151,7 +156,7 @@ def _ytdl(bot, message, isZip=False, isLeech=False):
         buttons.sbutton("Best Video", f"qu {msg_id} {best_video}")
         buttons.sbutton("Best Audio", f"qu {msg_id} {best_audio}")
         buttons.sbutton("Cancel", f"qu {msg_id} cancel")
-        YTBUTTONS = InlineKeyboardMarkup(buttons.build_menu(2))
+        YTBUTTONS = buttons.build_menu(2)
         listener_dict[msg_id] = [listener, user_id, link, name, YTBUTTONS, args, formats_dict]
         bmsg = sendMarkup('Choose Video Quality:', bot, message, YTBUTTONS)
 
@@ -173,7 +178,7 @@ def _qual_subbuttons(task_id, b_name, msg):
         buttons.sbutton(buttonName, f"qu {task_id} {d_data[1]}")
     buttons.sbutton("Back", f"qu {task_id} back")
     buttons.sbutton("Cancel", f"qu {task_id} cancel")
-    SUBBUTTONS = InlineKeyboardMarkup(buttons.build_menu(2))
+    SUBBUTTONS = buttons.build_menu(2)
     editMessage(f"Choose Bit rate for <b>{b_name}</b>:", msg, SUBBUTTONS)
 
 def _mp3_subbuttons(task_id, msg, playlist=False):
@@ -189,7 +194,7 @@ def _mp3_subbuttons(task_id, msg, playlist=False):
         buttons.sbutton(f"{q}K-mp3", f"qu {task_id} {audio_format}")
     buttons.sbutton("Back", f"qu {task_id} back")
     buttons.sbutton("Cancel", f"qu {task_id} cancel")
-    SUBBUTTONS = InlineKeyboardMarkup(buttons.build_menu(2))
+    SUBBUTTONS = buttons.build_menu(2)
     editMessage(f"Choose Audio{i} Bitrate:", msg, SUBBUTTONS)
 
 def select_format(update, context):

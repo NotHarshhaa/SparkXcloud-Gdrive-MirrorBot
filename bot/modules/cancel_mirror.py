@@ -1,4 +1,3 @@
-from telegram import InlineKeyboardMarkup
 from telegram.ext import CommandHandler, CallbackQueryHandler
 from time import sleep
 from threading import Thread
@@ -19,7 +18,8 @@ def cancel_mirror(update, context):
         gid = context.args[0]
         dl = getDownloadByGid(gid)
         if not dl:
-            return sendMessage(f"GID: <code>{gid}</code> 𝐍𝐨𝐭 𝐅𝐨𝐮𝐧𝐝.", context.bot, update.message)
+            sendMessage(f"GID: <code>{gid}</code> 𝐍𝐨𝐭 𝐅𝐨𝐮𝐧𝐝.", context.bot, update.message)
+            return
     elif update.message.reply_to_message:
         mirror_message = update.message.reply_to_message
         with download_dict_lock:
@@ -28,14 +28,17 @@ def cancel_mirror(update, context):
             else:
                 dl = None
         if not dl:
-            return sendMessage("𝐓𝐡𝐢𝐬 𝐢𝐬 𝐧𝐨𝐭 𝐚𝐧 𝐚𝐜𝐭𝐢𝐯𝐞 𝐭𝐚𝐬𝐤!", context.bot, update.message)
+            sendMessage("𝐓𝐡𝐢𝐬 𝐢𝐬 𝐧𝐨𝐭 𝐚𝐧 𝐚𝐜𝐭𝐢𝐯𝐞 𝐭𝐚𝐬𝐤!", context.bot, update.message)
+            return
     elif len(context.args) == 0:
         msg = f"𝐑𝐞𝐩𝐥𝐲 𝐭𝐨 𝐚𝐧 𝐚𝐜𝐭𝐢𝐯𝐞 <code>/{BotCommands.MirrorCommand}</code> 𝐦𝐞𝐬𝐬𝐚𝐠𝐞 𝐰𝐡𝐢𝐜𝐡 \
                 𝐰𝐚𝐬 𝐮𝐬𝐞𝐝 𝐭𝐨 𝐬𝐭𝐚𝐫𝐭 𝐭𝐡𝐞 𝐝𝐨𝐰𝐧𝐥𝐨𝐚𝐝 𝐨𝐫 𝐬𝐞𝐧𝐝 <code>/{BotCommands.CancelMirror} GID</code> 𝐭𝐨 𝐜𝐚𝐧𝐜𝐞𝐥 𝐢𝐭!"
-        return sendMessage(msg, context.bot, update.message)
+        sendMessage(msg, context.bot, update.message)
+        return
 
     if OWNER_ID != user_id and dl.message.from_user.id != user_id and user_id not in SUDO_USERS:
-        return sendMessage("This task is not for you!", context.bot, update.message)
+        sendMessage("𝐓𝐡𝐢𝐬 𝐭𝐚𝐬𝐤 𝐢𝐬 𝐧𝐨𝐭 𝐟𝐨𝐫 𝐲𝐨𝐮!", context.bot, update.message)
+        return
 
     dl.download().cancel_download()
 
@@ -48,6 +51,11 @@ def cancel_all(status):
             sleep(1)
 
 def cancell_all_buttons(update, context):
+    with download_dict_lock:
+        count = len(download_dict)
+    if count == 0:
+        sendMessage("No active tasks!", context.bot, update.message)
+        return
     buttons = button_build.ButtonMaker()
     buttons.sbutton("Downloading", f"canall {MirrorStatus.STATUS_DOWNLOADING}")
     buttons.sbutton("Uploading", f"canall {MirrorStatus.STATUS_UPLOADING}")
@@ -59,7 +67,7 @@ def cancell_all_buttons(update, context):
     buttons.sbutton("Paused", f"canall {MirrorStatus.STATUS_PAUSED}")
     if AUTO_DELETE_MESSAGE_DURATION == -1:
         buttons.sbutton("Close", "canall close")
-    button = InlineKeyboardMarkup(buttons.build_menu(2))
+    button = buttons.build_menu(2)
     can_msg = sendMarkup('Choose tasks to cancel.', context.bot, update.message, button)
     Thread(target=auto_delete_message, args=(context.bot, update.message, can_msg)).start()
 

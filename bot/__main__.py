@@ -6,7 +6,6 @@ from datetime import datetime
 from time import time
 from pyrogram import idle
 from sys import executable
-from telegram import InlineKeyboardMarkup
 from telegram.ext import CommandHandler
 from telegram import ParseMode
 
@@ -69,7 +68,7 @@ def start(update, context):
     buttons = ButtonMaker()
     buttons.buildbutton("🔥 Repo", "https://github.com/Spark-X-Cloud/SparkXcloud-Gdrive-MirrorBot")
     buttons.buildbutton("😎 Channel", "https://t.me/+R2czcPeMkUc1NDI1")
-    reply_markup = InlineKeyboardMarkup(buttons.build_menu(2))
+    reply_markup = buttons.build_menu(2)
     if CustomFilters.authorized_user(update) or CustomFilters.authorized_chat(update):
         start_string = f'''
 ☠️ https://t.me/SparkXcloud        
