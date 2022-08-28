@@ -32,6 +32,7 @@
 - *Thumbnail for each user*
 - *Set upload as document or as media for each user*
 - *4GB file upload with premium account*
+- *Upload all files to specific superGroup/channel*
 ### 🥀 Google
 - *Stop duplicates for all tasks except yt-dlp tasks*
 - *Download G-Drive links*
@@ -40,7 +41,7 @@
 - *Recursive Search (only with `root` or TeamDrive ID, folder ids will be listed with non-recursive method)*
 - *Use Token.pickle if file not found with Service Account, for all Gdrive functions*
 - *List result in html file instead of telegraph or telegram message to avoid limits by @junedkh*
-- *Random Service Account at startup*
+- *Random Service Account for each task*
 ### 🥀 Status
 - *Clone Status*
 - *Extract Status*
@@ -110,18 +111,19 @@
 - `UPTOBOX_TOKEN`: *Uptobox token to mirror uptobox links. Get it from [Uptobox Premium Account](https://uptobox.com/my_account).*
 - `TORRENT_TIMEOUT`: *Timeout of dead torrents downloading with qBittorrent and Aria2c in seconds.*
 - `EXTENTION_FILTER`: *File extentions that won't upload/clone. Separate them by space.*
-- `INCOMPLETE_TASK_NOTIFIER`: *Get incomplete task messages after restart. Require database and (supergroup or channel). Default is `False`. `Bool`*
+- `INCOMPLETE_TASK_NOTIFIER`: *Get incomplete task messages after restart. Require database and superGroup. Default is `False`. `Bool`*
 -----
 ### ➡️ Update
 - `UPSTREAM_REPO`: *Your github repository link, if your repo is private add `https://username:{githubtoken}@github.com/{username}/{reponame}` format. Get token from [Github settings](https://github.com/settings/tokens). So you can update your bot from filled repository on each restart. ***NOTE***: Any change in docker or requirements you need to deploy/build again with updated repo to take effect. DON'T delete .gitignore file.*
 - `UPSTREAM_BRANCH`: *Upstream branch for update. Default is `master`.*
 -----
 ### ➡️ Leech
-- `USER_SESSION_STRING`: *To download/upload from your telegram account. If you own premium account. To generate session string use this command `python3 generate_string_session.py` after mounting repo folder for sure.* ***NOTE***: *You can't use bot with private message, use it with supergroup or channel.*
+- `USER_SESSION_STRING`: *To download/upload from your telegram account. If you own premium account. To generate session string use this command `python3 generate_string_session.py` after mounting repo folder for sure.* ***NOTE***: *You can't use bot with private message, use it with superGroup.*
 - `LEECH_SPLIT_SIZE`: *Size of split in bytes. Default is `2GB`. Default is `4GB` if your account is premium.*
 - `AS_DOCUMENT`: *Default type of Telegram file upload. Default is `False` mean as media. `Bool`*
 - `EQUAL_SPLITS`: *Split files larger than **LEECH_SPLIT_SIZE** into equal parts size (Not working with zip cmd). Default is `False`. `Bool`*
 - `CUSTOM_FILENAME`: *Add custom word to leeched file name.*
+- `DUMP_CHAT`: *Chat ID. Upload files to specific chat. `str`. **NOTE**: Only available for superGroup/channel. Add `-100` before channel/superGroup id. In short don't add bot id or your id!*
 -----
 ### ➡️ qBittorrent/Aria2c
 - `BASE_URL_OF_BOT`: *Valid BASE URL where the bot is deployed to use qbittorrent web selection. Format of URL should be `http://myip`, where `myip` is the IP/Domain(public) of your bot or if you have chosen port other than `80` so write it in this format `http://myip:port` (`http` and not `https`). This Var is optional on VPS and required for Heroku specially to avoid app sleeping/idling. For Heroku fill `https://yourappname.herokuapp.com`. Still got idling? You can use http://cron-job.org to ping your Heroku app.*
@@ -132,7 +134,7 @@
 ### ➡️ RSS
 - `RSS_DELAY`: *Time in seconds for rss refresh interval. Recommended `900` second at least. Default is `900` in sec.*
 - `RSS_COMMAND`: *Choose command for the desired action.*
-- `RSS_CHAT_ID`: *Chat ID where rss links will be sent. If using channel then add channel id.*
+- `RSS_CHAT_ID`: *Chat ID where rss links will be sent. If using channel then add channel id. Add `-100` before channel id.*
 - `RSS_USER_SESSION_STRING`: *To send rss links from your telegram account. Instead of adding bot to channel then linking the channel to group to get rss link since bot will not read command from itself or other bot. To generate session string use this command `python3 generate_string_session.py` after mounting repo folder for sure. **NOTE**: Don't use same session string as* `USER_SESSION_STRING`.
   - ***RSS NOTE***: `DATABASE_URL` *and* `RSS_CHAT_ID` *is required, otherwise all rss commands will not work. You must use bot in group. You can add the bot to a channel and link this channel to group so messages sent by bot to channel will be forwarded to group without using* `RSS_USER_STRING_SESSION`.
 -----
@@ -641,4 +643,12 @@ machine example.workers.dev password index_password
 ```
 -----
 *Where host is the name of extractor (eg. Youtube, Twitch). Multiple accounts of different hosts can be added each separated by a new line.*
+
+## ⬇️ Donations
+
+***<p> If you feel like showing your appreciation for this project, then how about buying me a coffee. </p>***
+
+[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.ko-fi.com/harshhaareddy)
+
+-----
 
