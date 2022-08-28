@@ -36,7 +36,7 @@ def select(update, context):
         sendMessage("This task is not for you!", context.bot, update.message)
         return
     if dl.status() not in [MirrorStatus.STATUS_DOWNLOADING, MirrorStatus.STATUS_PAUSED, MirrorStatus.STATUS_WAITING]:
-        sendMessage('𝐓𝐚𝐬𝐤 𝐬𝐡𝐨𝐮𝐥𝐝 𝐛𝐞 𝐢𝐧 𝐝𝐨𝐰𝐧𝐥𝐨𝐚𝐝𝐢𝐧𝐠 𝐬𝐭𝐚𝐭𝐮𝐬 𝐨𝐫 𝐢𝐧 𝐩𝐚𝐮𝐬𝐞 𝐬𝐭𝐚𝐭𝐮𝐬 𝐢𝐧𝐜𝐚𝐬𝐞 𝐦𝐞𝐬𝐬𝐚𝐠𝐞 𝐝𝐞𝐥𝐞𝐭𝐞𝐝 𝐛𝐲 𝐰𝐫𝐨𝐧𝐠 𝐨𝐫 𝐢𝐧 𝐪𝐮𝐞𝐮𝐞𝐝 𝐬𝐭𝐚𝐭𝐮𝐬 𝐢𝐧𝐜𝐚𝐬𝐞 𝐲𝐨𝐮 𝐮𝐬𝐞𝐝 𝐭𝐨𝐫𝐫𝐞𝐧𝐭 𝐟𝐢𝐥𝐞!', context.bot, update.message)
+        sendMessage('𝐓𝐚𝐬𝐤 𝐬𝐡𝐨𝐮𝐥𝐝 𝐛𝐞 𝐢𝐧 𝐝𝐨𝐰𝐧𝐥𝐨𝐚𝐝 𝐨𝐫 𝐩𝐚𝐮𝐬𝐞 (𝐢𝐧𝐜𝐚𝐬𝐞 𝐦𝐞𝐬𝐬𝐚𝐠𝐞 𝐝𝐞𝐥𝐞𝐭𝐞𝐝 𝐛𝐲 𝐰𝐫𝐨𝐧𝐠) 𝐨𝐫 𝐪𝐮𝐞𝐮𝐞𝐝 (𝐬𝐭𝐚𝐭𝐮𝐬 𝐢𝐧𝐜𝐚𝐬𝐞 𝐲𝐨𝐮 𝐮𝐬𝐞𝐝 𝐭𝐨𝐫𝐫𝐞𝐧𝐭 𝐟𝐢𝐥𝐞)!', context.bot, update.message)
         return
     if dl.name().startswith('[METADATA]'):
         sendMessage('𝐓𝐫𝐲 𝐚𝐟𝐭𝐞𝐫 𝐝𝐨𝐰𝐧𝐥𝐨𝐚𝐝𝐢𝐧𝐠 𝐦𝐞𝐭𝐚𝐝𝐚𝐭𝐚 𝐟𝐢𝐧𝐢𝐬𝐡𝐞𝐝!', context.bot, update.message)
@@ -68,7 +68,11 @@ def get_confirm(update, context):
         query.answer(text="𝐓𝐡𝐢𝐬 𝐭𝐚𝐬𝐤 𝐡𝐚𝐬 𝐛𝐞𝐞𝐧 𝐜𝐚𝐧𝐜𝐞𝐥𝐥𝐞𝐝!", show_alert=True)
         query.message.delete()
         return
-    listener = dl.listener()
+    if hasattr(dl, 'listener'):
+        listener = dl.listener()
+    else:
+        query.answer(text="Not in download state anymore! Keep this message to resume the seed if seed enabled!", show_alert=True)
+        return
     if user_id != listener.message.from_user.id:
         query.answer(text="𝐓𝐡𝐢𝐬 𝐭𝐚𝐬𝐤 𝐢𝐬 𝐧𝐨𝐭 𝐟𝐨𝐫 𝐲𝐨𝐮!", show_alert=True)
     elif data[1] == "pin":
