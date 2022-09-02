@@ -26,41 +26,25 @@ def stats(update, context):
         last_commit = check_output(["git log -1 --date=short --pretty=format:'%cd <b>From</b> %cr'"], shell=True).decode()
     else:
         last_commit = 'No UPSTREAM_REPO'
-    currentTime = get_readable_time(time() - botStartTime)
-    osUptime = get_readable_time(time() - boot_time())
-    total, used, free, disk= disk_usage('/')
-    total = get_readable_file_size(total)
-    used = get_readable_file_size(used)
-    free = get_readable_file_size(free)
-    sent = get_readable_file_size(net_io_counters().bytes_sent)
-    recv = get_readable_file_size(net_io_counters().bytes_recv)
-    cpuUsage = cpu_percent(interval=0.5)
-    p_core = cpu_count(logical=False)
-    t_core = cpu_count(logical=True)
+    total, used, free, disk = disk_usage('/')
     swap = swap_memory()
-    swap_p = swap.percent
-    swap_t = get_readable_file_size(swap.total)
     memory = virtual_memory()
-    mem_p = memory.percent
-    mem_t = get_readable_file_size(memory.total)
-    mem_a = get_readable_file_size(memory.available)
-    mem_u = get_readable_file_size(memory.used)
-    stats = f'<b>🛠 𝙲ᴏᴍᴍɪᴛ ᴅᴀᴛᴇ :</b> {last_commit}\n\n'\
-            f'<b>💝 𝙾ɴʟɪɴᴇ ᴛɪᴍᴇ : </b> {currentTime}\n'\
-            f'<b>☠️ 𝙾s ᴜᴘᴛɪᴍᴇ :</b> {osUptime}\n\n'\
-            f'<b>📇 Tᴏᴛᴀʟ ᴅɪsᴋ sᴘᴀᴄᴇ :</b> {total}\n'\
-            f'<b>🗃 𝙳ɪsᴋ sᴘᴀᴄᴇ ᴜsᴇᴅ :</b> {used} | <b>💌 𝙳ɪsᴋ sᴘᴀᴄᴇ ғʀᴇᴇ :</b> {free}\n\n'\
-            f'<b>☠️ 𝚄ᴘʟᴏᴀᴅ ᴅᴀᴛᴀ :</b> {sent}\n'\
-            f'<b>💃 𝙳ᴏᴡɴʟᴏᴀᴅ ᴅᴀᴛᴀ :</b> {recv}\n\n'\
-            f'<b>🖥 𝙲ᴘᴜ ᴜsᴜᴀɢᴇ :</b> {cpuUsage}%\n'\
-            f'<b>🧭 𝚁ᴀᴍ :</b> {mem_p}%\n'\
+    stats = f'<b>Commit Date:</b> {last_commit}\n\n'\
+            f'<b>💝 𝙾ɴʟɪɴᴇ ᴛɪᴍᴇ : </b> {get_readable_time(time() - botStartTime)}\n'\
+            f'<b>☠️ 𝙾s ᴜᴘᴛɪᴍᴇ :</b> {get_readable_time(time() - boot_time())}\n\n'\
+            f'<b>📇 Tᴏᴛᴀʟ ᴅɪsᴋ sᴘᴀᴄᴇ :</b> {get_readable_file_size(total)}\n'\
+            f'<b>🗃 𝙳ɪsᴋ sᴘᴀᴄᴇ ᴜsᴇᴅ :</b> {get_readable_file_size(used)}| <b>💌 𝙳ɪsᴋ sᴘᴀᴄᴇ ғʀᴇᴇ :</b> {get_readable_file_size(free)}\n\n'\
+            f'<b>☠️ 𝚄ᴘʟᴏᴀᴅ ᴅᴀᴛᴀ :</b> {get_readable_file_size(net_io_counters().bytes_sent)}\n'\
+            f'<b>💃 𝙳ᴏᴡɴʟᴏᴀᴅ ᴅᴀᴛᴀ :</b> {get_readable_file_size(net_io_counters().bytes_recv)}\n\n'\
+            f'<b>🖥 𝙲ᴘᴜ ᴜsᴜᴀɢᴇ :</b> {cpu_percent(interval=0.5)}%\n'\
+            f'<b>🧭 𝚁ᴀᴍ :</b> {memory.percent}%\n'\
             f'<b>👸 𝙳ɪsᴋ ᴜsᴇᴅ :</b> {disk}%\n\n'\
-            f'<b>💽 𝙿ʜʏsɪᴄᴀʟ ᴄᴏʀᴇs :</b> {p_core}\n'\
-            f'<b>🍥 𝚃otal Cores :</b> {t_core}\n\n'\
-            f'<b>✳ 𝚂ᴡᴀᴘ :</b> {swap_t} | <b>👸 𝙳ɪsᴋ :</b> {swap_p}%\n'\
-            f'<b>☁ 𝚃ᴏᴛᴀʟ ᴏғ ᴍᴇᴏᴍᴏʀʏ :</b> {mem_t}\n'\
-            f'<b>💃 𝙵ʀᴇᴇ ᴏғ ᴍᴇᴍᴏʀʏ :</b> {mem_a}\n'\
-            f'<b>👰 𝚄sᴀɢᴇ ᴏғ ᴍᴇᴍᴏʀʏ :</b> {mem_u}\n'
+            f'<b>💽 𝙿ʜʏsɪᴄᴀʟ ᴄᴏʀᴇs :</b> {cpu_count(logical=False)}\n'\
+            f'<b>🍥 𝚃otal Cores :</b> {cpu_count(logical=True)}\n\n'\
+            f'<b>✳ 𝚂ᴡᴀᴘ :</b> {get_readable_file_size(swap.total)}| <b>👸 𝙳ɪsᴋ :</b> {swap.percent}%\n'\
+            f'<b>☁ 𝚃ᴏᴛᴀʟ ᴏғ ᴍᴇᴏᴍᴏʀʏ :</b> {get_readable_file_size(memory.total)}\n'\
+            f'<b>💃 𝙵ʀᴇᴇ ᴏғ ᴍᴇᴍᴏʀʏ :</b> {get_readable_file_size(memory.available)}\n'\
+            f'<b>👰 𝚄sᴀɢᴇ ᴏғ ᴍᴇᴍᴏʀʏ :</b> {get_readable_file_size(memory.used)}\n'
     sendMessage(stats, context.bot, update.message)
 
 def start(update, context):

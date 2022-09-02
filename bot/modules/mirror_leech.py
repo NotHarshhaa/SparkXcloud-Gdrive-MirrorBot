@@ -106,10 +106,10 @@ def _mirror_leech(bot, message, isZip=False, extract=False, isQbit=False, isLeec
                 Thread(target=TelegramDownloadHelper(listener).add_download, args=(message, f'{DOWNLOAD_DIR}{listener.uid}/', name)).start()
                 if multi > 1:
                     sleep(4)
+                    nextmsg = type('nextmsg', (object, ), {'chat_id': message.chat_id, 'message_id': message.reply_to_message.message_id + 1})
                     msg = message.text.split(maxsplit=mi+1)
                     msg[mi] = f"{multi - 1}"
                     nextmsg = sendMessage(" ".join(msg), bot, nextmsg)
-                    nextmsg = sendMessage(message.text.replace(str(multi), str(multi - 1), 1), bot, nextmsg)
                     nextmsg.from_user.id = message.from_user.id
                     sleep(4)
                     Thread(target=_mirror_leech, args=(bot, nextmsg, isZip, extract, isQbit, isLeech)).start()
@@ -218,10 +218,10 @@ Number should be always before |newname or pswd:
 
     if multi > 1:
         sleep(4)
+        nextmsg = type('nextmsg', (object, ), {'chat_id': message.chat_id, 'message_id': message.reply_to_message.message_id + 1})
         msg = message.text.split(maxsplit=mi+1)
         msg[mi] = f"{multi - 1}"
         nextmsg = sendMessage(" ".join(msg), bot, nextmsg)
-        nextmsg = sendMessage(message.text.replace(str(multi), str(multi - 1), 1), bot, nextmsg)
         nextmsg.from_user.id = message.from_user.id
         sleep(4)
         Thread(target=_mirror_leech, args=(bot, nextmsg, isZip, extract, isQbit, isLeech)).start()
