@@ -26,27 +26,42 @@ def stats(update, context):
         last_commit = check_output(["git log -1 --date=short --pretty=format:'%cd <b>From</b> %cr'"], shell=True).decode()
     else:
         last_commit = 'No UPSTREAM_REPO'
-    total, used, free, disk = disk_usage('/')
+    currentTime = get_readable_time(time() - botStartTime)
+    osUptime = get_readable_time(time() - boot_time())
+    total, used, free, disk= disk_usage('/')
+    total = get_readable_file_size(total)
+    used = get_readable_file_size(used)
+    free = get_readable_file_size(free)
+    sent = get_readable_file_size(net_io_counters().bytes_sent)
+    recv = get_readable_file_size(net_io_counters().bytes_recv)
+    cpuUsage = cpu_percent(interval=0.5)
+    p_core = cpu_count(logical=False)
+    t_core = cpu_count(logical=True)
     swap = swap_memory()
+    swap_p = swap.percent
+    swap_t = get_readable_file_size(swap.total)
     memory = virtual_memory()
-    stats = f'<b>⌈➳ 🛠 𝙲𝙾𝙼𝙼𝙸𝚃 𝙳𝙰𝚃𝙴🎄:</b> {last_commit}\n\n'\
-            f'<b>⌈➳ 💝 𝙾𝙽𝙻𝙸𝙽𝙴 𝚃𝙸𝙼𝙴 ⌚ :</b> {get_readable_time(time() - botStartTime)}\n'\
-            f'<b>⌈➳ ☠️ 𝙾𝚂 𝚄𝙿𝚃𝙸𝙼𝙴 🧰 :</b> {get_readable_time(time() - boot_time())}\n\n'\
-            f'<b>⌈➳ 📇 𝙳𝙸𝚂𝙺 𝚂𝙿𝙰𝙲𝙴 ☠️ :</b> {get_readable_file_size(total)}\n'\
-            f'<b>⌈➳ 🗃 𝙳𝙸𝚂𝙺 𝚂𝙿𝙰𝙲𝙴 𝚄𝚂𝙴𝙳 :</b> {get_readable_file_size(used)} | <b>⌈➳ 💌 𝙳𝙸𝚂𝙺 𝚂𝙿𝙰𝙲𝙴 𝙵𝚁𝙴𝙴 :</b> {get_readable_file_size(free)}\n\n'\
-            f'<b>⌈➳ 🔥 𝚄𝙿𝙻𝙾𝙰𝙳 𝙳𝙰𝚃𝙰 💞... ⇆⏫ :</b> {get_readable_file_size(net_io_counters().bytes_sent)}\n'\
-            f'<b>⌈➳ 💃 𝙳𝙾𝚆𝙽𝙻𝙾𝙰𝙳 𝙳𝙰𝚃𝙰 💔... ⇆⏬ :</b> {get_readable_file_size(net_io_counters().bytes_recv)}\n\n'\
-            f'<b>⌈➳ 🖥 𝙲𝙿𝚄 𝚄𝚂𝙰𝙶𝙴↹ :</b> {cpu_percent(interval=0.5)}%\n'\
-            f'<b>⌈➳ 🧭 𝚁𝙰𝙼 :</b> {memory.percent}%\n'\
-            f'<b>⌈➳ 👸 𝙳𝙸𝚂𝙺 𝚄𝚂𝙴𝙳 :</b> {disk}%\n\n'\
-            f'<b>⌈➳ 💽 𝙿𝙷𝚈𝚂𝙸𝙲𝙰𝙻 𝙲𝙾𝚁𝙴𝚂 ⊫ :</b> {cpu_count(logical=False)}\n'\
-            f'<b>⌈➳ 🍥 𝚃𝙾𝚃𝙰𝙻 𝙲𝙾𝚁𝙴𝚂 𖣃 :</b> {cpu_count(logical=True)}\n\n'\
-            f'<b>⌈➳ ✳ 𝚂𝚆𝙰𝙿 :</b> {get_readable_file_size(swap.total)} | <b>⌈➳ 👸 𝙳𝙸𝚂𝙺 :</b> {swap.percent}%\n'\
-            f'<b>⌈➳ ☁ 𝚃𝙾𝚃𝙰𝙻 𝙾𝙵 𝙼𝙴𝙼𝙾𝚁𝚈 => :</b> {get_readable_file_size(memory.total)}\n'\
-            f'<b>⌈➳ 💃 𝙵𝚁𝙴𝙴 𝙾𝙵 𝙼𝙴𝙼𝙾𝚁𝚈 :</b> {get_readable_file_size(memory.available)}\n'\
-            f'<b>⌈➳ 👰 𝚄𝚂𝙰𝙶𝙴 𝙾𝙵 𝙼𝙴𝙼𝙾𝚁𝚈 :</b> {get_readable_file_size(memory.used)}\n'
+    mem_p = memory.percent
+    mem_t = get_readable_file_size(memory.total)
+    mem_a = get_readable_file_size(memory.available)
+    mem_u = get_readable_file_size(memory.used)
+    stats = f'<b>🛠 𝙲ᴏᴍᴍɪᴛ ᴅᴀᴛᴇ :</b> {last_commit}\n\n'\
+            f'<b>💝 𝙾ɴʟɪɴᴇ ᴛɪᴍᴇ : </b> {currentTime}\n'\
+            f'<b>☠️ 𝙾s ᴜᴘᴛɪᴍᴇ :</b> {osUptime}\n\n'\
+            f'<b>📇 Tᴏᴛᴀʟ ᴅɪsᴋ sᴘᴀᴄᴇ :</b> {total}\n'\
+            f'<b>🗃 𝙳ɪsᴋ sᴘᴀᴄᴇ ᴜsᴇᴅ :</b> {used} | <b>💌 𝙳ɪsᴋ sᴘᴀᴄᴇ ғʀᴇᴇ :</b> {free}\n\n'\
+            f'<b>☠️ 𝚄ᴘʟᴏᴀᴅ ᴅᴀᴛᴀ :</b> {sent}\n'\
+            f'<b>💃 𝙳ᴏᴡɴʟᴏᴀᴅ ᴅᴀᴛᴀ :</b> {recv}\n\n'\
+            f'<b>🖥 𝙲ᴘᴜ ᴜsᴜᴀɢᴇ :</b> {cpuUsage}%\n'\
+            f'<b>🧭 𝚁ᴀᴍ :</b> {mem_p}%\n'\
+            f'<b>👸 𝙳ɪsᴋ ᴜsᴇᴅ :</b> {disk}%\n\n'\
+            f'<b>💽 𝙿ʜʏsɪᴄᴀʟ ᴄᴏʀᴇs :</b> {p_core}\n'\
+            f'<b>🍥 𝚃otal Cores :</b> {t_core}\n\n'\
+            f'<b>✳ 𝚂ᴡᴀᴘ :</b> {swap_t} | <b>👸 𝙳ɪsᴋ :</b> {swap_p}%\n'\
+            f'<b>☁ 𝚃ᴏᴛᴀʟ ᴏғ ᴍᴇᴏᴍᴏʀʏ :</b> {mem_t}\n'\
+            f'<b>💃 𝙵ʀᴇᴇ ᴏғ ᴍᴇᴍᴏʀʏ :</b> {mem_a}\n'\
+            f'<b>👰 𝚄sᴀɢᴇ ᴏғ ᴍᴇᴍᴏʀʏ :</b> {mem_u}\n'
     sendMessage(stats, context.bot, update.message)
-
 
 def start(update, context):
     buttons = ButtonMaker()
