@@ -55,13 +55,13 @@
 ### 🥀 Yt-dlp
 - *Switch from youtube-dl to yt-dlp and fix all conflicts*
 - *Yt-dlp quality buttons*
-- *Support for download live streams*
 - *Ability to use specific yt-dlp arg for each task*
 - *Fix download progress*
 ### 🥀 Database
 - *SQL Database support*
 - *Save leech settings including thumbnails in database*
 - *Save sudo and authorized users*
+- *Save RSS last recorded data*
 - *Incomplete task notifier to get incomplete task messages after restart*
 ### 🥀 Torrents Search
 - *Torrent search support*
@@ -69,7 +69,7 @@
 - *Search on torrents with variable plugins using qBittorrent search engine*
 ### 🥀 Archives
 - *Zip instead of tar*
-- *Using 7-zip tool to extract all supported files*
+- *Using 7-zip tool to extract all supported types*
 - *Extract rar, zip and 7z within folder or splits with or without password*
 - *Zip file/folder with or without password*
 ### 🥀 RSS
